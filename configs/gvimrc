@@ -1,0 +1,26 @@
+" Mac Vim configuration file for Simon Rowe
+" Last Updated on: 30th July 2011
+"
+" Set the font face to Monaco and font size to 14 points
+set guifont=Monaco:h14
+" set the initial number of editor lines to show when a editor window opens
+set lines=150
+" set the initial number of editor columns to set the initial editor window width
+set columns=160
+" set the name of the MacVim colour scheme to use by default
+colorscheme torte
+" make sure that bottom status bar is running. and displayed
+set ruler
+set laststatus=2
+" ensure syntx highlighting is turned on
+syntax on
+" don't make noise
+set noerrorbells
+" add a cursor line to show our position in the file
+set cursorline
+" set the coolour of the cursor line - override colour scheme in use
+:hi CursorLine   cterm=NONE ctermbg=darkred ctermfg=white guibg=darkred guifg=white
+" Remove the Toolbar in the Gui MacVim
+set guioptions-=T
+" Turn on search as you type option
+set incsearch

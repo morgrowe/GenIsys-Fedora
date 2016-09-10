@@ -1,0 +1,135 @@
+#!/bin/bash
+#
+# Script to install the packages used on Fedora 24
+#   created on 10 Sep 2016 - simon@wiremoons.com based on Ubuntu 16.04 setup script
+#
+#
+#
+printf "\n"
+printf "\n\t\tFedora 24 - package installer\n"
+printf "\n"
+printf "Running with following details\n\n"
+printf "\tScript: '%s'\n\tHostname:'%s'\n\tOS: '%s'\n\tUser '%s'\n\n" \
+            "$0" "$HOSTNAME" "$(uname)" "$(whoami)"
+printf "\nThis installation script should be run after completing a 'server' or 'desktop' install of Fedora 24.\n"
+printf "\nEnter your root password when prompted so the packages can be install for you\n"
+sleep 3
+#
+# set the hostname for the computer
+printf "\nQUESTION:\n"
+read -p "Enter the hostname for your computer : " -t 30 -re REPLY
+if [[ $REPLY != "" ]] ; then
+    sudo hostnamectl set-hostname "$REPLY"
+    printf "\n\tComputer hostname now set to: '$(hostname)' - DONE\n"
+else
+    printf "\nYou need to set the hostname for your computer with:  sudo hostnamectl set-hostname \"pc-name-here\"\n"
+fi
+sleep 2
+#
+# ensure the packages lists is up to date
+sudo dnf update
+#
+# add RPM Fusion Software Repos for 'free' and 'non-free' - check with 'dnf repolist' or 'dnf repolist all'
+sudo dnf install http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+sudo dnf install http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+#
+# now ensure the keys and package lists are up to date for above RPM Fusion
+sudo dnf update
+# install ubuntu base packages we need
+sudo dnf install p7zip rlwrap ncdu fuse-sshfs clamav fail2ban \
+kernel-devel kernel-headers gcc dkms acpid
+#
+# install antivirus
+#sudo freshclam
+#
+#
+# Install additional 'desktop' packages also if required by user...
+printf "\nQUESTION:\n"
+read -p "Do you want to install additional 'desktop' type packages  y/n " -t 30 -re REPLY
+if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+    sudo dnf install vlc rdesktop gimp gnome-tweak-tool simple-scan
+    printf "DONE\n"
+else
+    printf "\nAdditional packages NOT installed at user's request\n"
+fi
+sleep 2
+#
+#
+# Install Nvidia graphics card driver if required by the user
+#    remove with:  dnf remove xorg-x11-drv-nvidia\*
+printf "\nQUESTION:\n"
+read -p "Install nVidia graphics card driver  y/n " -t 30 -re REPLY
+if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+    printf "\nDRIVER INSTALL - nVidia\n"
+    sudo dnf install akmod-nvidia "kernel-devel-uname-r == $(uname -r)"
+    sudo dnf install vdpauinfo libva-vdpau-driver libva-utils
+    sudo dnf update -y
+    printf "\n    nVidia Driver Install - restart to enable!\n"
+else
+    printf "\nnVidia Driver packages NOT installed at user's request\n"
+fi
+sleep 2
+#
+#
+# remove Fedora packages from the system we dont use or need
+#sudo dnf remove firefox firefox-locale-en flashplugin-installer
+
+# clean up any packages still left over that need to be cleaned out
+sudo dnf autoremove
+#
+#
+# check locale setting
+printf "\nSYSTEM LOCALE STATUS:\n"
+sudo localectl status
+printf "Checking for UTF-8 supprt in terminal...  "
+echo -e '\n        \xe2\x82\xac\n'
+printf "Euro symbol displayed above OK??\n"
+printf "\nQUESTION:\n"
+read -p "Do you want to locale setup for 'en_GB.UTF-8'  y/n " -t 30 -re REPLY
+if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+    printf "\nLOCALE SETUP\n"
+    sudo localectl set-locale LANG=en_GB.utf8
+    printf "Checking for UTF-8 supprt in terminal...  "
+    echo -e '\n        \xe2\x82\xac\n'
+    printf "Euro symbol displayed above OK??\n"
+    printf "DONE\n"
+else
+    printf "\nLocale setup not run at user's request\n"
+fi
+sleep 2
+#
+# make sure journald logs are persistent across reboots
+sudo systemd-tmpfiles --create --prefix /var/log/journal
+sudo systemctl restart systemd-journald
+sudo gpasswd -a simon systemd-journal
+printf "\nJournald made persistent across reboots\n"
+#
+#
+# start now and enable on boot Openssh server
+printf "\nQUESTION:\n"
+read -p "Do you want to enable and start Openssh server?  y/n " -t 30 -re REPLY
+if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+    printf "\nOPENSSH SERVER SETUP\n"
+    sudo systemctl enable sshd.service
+    sudo systemctl start sshd.service
+    printf "Checking Openssh server status...  "
+    sudo systemctl status sshd.service
+    printf "Openssh server displayed above OK??\n"
+    printf "DONE\n"
+else
+    printf "\nOpenssh Server not setup at user's request\n"
+fi
+sleep 2
+
+#
+# TODO: install 'issue' to '/etc/issue.net'
+# TODO: change '/etc/ssh/sshd_config' to block root logins & issue banner enable
+#
+# Install and setup complete - update user and finish up
+printf "\nINSTALL COMPLETE"
+printf "\nPlease run:\n\t - sensors-detect\n\t - sudo gpasswd -a simon fuse"
+printf "\nOther packages to consider are:\n\thandbrake / minidlna / mdadm / pm-utils / kernel-wedge"
+printf "\n\tjed / jed-extra / btrfs-tools / nautilus-dropbox \n\n"
+printf "You can view all your install packages with the command:  dnf list installed | more\n"
+printf "\nEXIT\n"
+

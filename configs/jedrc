@@ -1,0 +1,108 @@
+%
+% .jedrc configuration file - created by Simon Rowe on 25th February 2014
+% 
+% 
+
+% if we are not running in batch execution - setup the prefered
+% keyboard mode and command keys for emulating other editors. Default
+% mode is emacs - my perefence is cua.
+if (BATCH == 0)
+{
+% set the default editing mode to cua - alternatives are emacs; edt; ide; brief; wordstar;
+() = evalfile("cua");
+} % end BATCH 
+
+%---------------------------------------------------------------------------
+%   load any other required slang support files
+%---------------------------------------------------------------------------
+
+require("cuamark");
+
+%---------------------------------------------------------------------------
+% User Information (used by some modes, automatically determined on
+% Unix)
+%---------------------------------------------------------------------------
+set_realname ("Simon Rowe");
+set_username ("simon");
+set_hostname ("wiremoons.com");
+set_emailaddress ("simon@wiremoons.com");
+
+%---------------------------------------------------------------------------
+%   Other misc configuration settings
+%---------------------------------------------------------------------------
+No_Backups = 1;        % If non-zero, backup files will not be created.
+DISPLAY_TIME = -1;     % display the time in the status bar 0==off 1==on -1==24hr
+LINENUMBERS = 2;       % display line number and column number in status bar 1==line number only 2==line & column 0==off
+BLINK = 1;             % if non zero, blink matching parenthesis
+TAB_DEFAULT = 4;       % Tab size  (also try edit_tab_stops)
+USE_TABS = 1;          % Use tabs when generating whitespace.
+TAB = 4;
+Tab_Always_Inserts_Tab = 0; % Set this to 1 if you want the tab key to insert tabs.
+%_Jed_Default_Color_Scheme = "black3";
+WRAP_DEFAULT = 80;      % wrap column
+ADD_NEWLINE = 0;        % add newline to file when writing if one not present
+IGNORE_BEEP = 3;        % Beep terminal during error messages---
+                       %  1 == sound only, 2 = visible bell only, 3 = both
+
+WRAP_INDENTS = 1;       % Non zero indents next line after wrapping current.
+                       %  Make this a 1 if you want indented text mode.
+KILL_LINE_FEATURE = 0; % If non-zero, kill line will kill through end of the 
+                       %  line if Point is at the beginning of the line. For
+                       %  emacs-like behavior, set this to zero.
+%Highlight_Trailing_Whitespace = 1; 
+
+%---------------------------------------------------------------------------
+% C-mode indentation style - how do you want the c code formated?
+%---------------------------------------------------------------------------
+c_set_style ("linux"); % or "linux", "gnu", "bsd", "k&r"
+
+%  Compiler interface - which complier to use?
+% 
+variable Compile_Default_Compiler = "gcc";           % GNU compiler
+
+
+%---------------------------------------------------------------------------
+% global hook - called on start up
+%---------------------------------------------------------------------------
+public define global_mode_hook (hook_name)
+{
+		% enable line numbers on left of screen
+		toggle_line_number_mode ();
+		% in all modes except 'c mode' tab inserts a tab
+		if (hook_name != "c_mode_hook")
+			local_setkey ("self_insert_cmd", "\t");
+		% load the cua mark extras file if in CUA mode
+		if (hook_name = "cua_mode_hook")
+				require("cuamark");
+		% add own keybindings for use in all mode
+		%
+		% Ctrl + right arrow to move forward one word
+		local_setkey ("skip_word", "^[[1;5C"); 
+		% Ctrl + right arrow to move backwards one word
+        local_setkey ("bskip_word", "^[[1;5D");
+		% toggle the display of line numbers on / off
+		setkey ("toggle_line_number_mode", "^T");
+}
+
+%---------------------------------------------------------------------------
+% alter key mappings below to suit own usage when in CUA mode
+%---------------------------------------------------------------------------
+
+define keybindings_hook (name)
+{
+    if (name == "cua")
+	{
+	    % define keys below
+		
+		return;
+	}
+}
+
+%---------------------------------------------------------------------------
+% load flyspell in text mode - mode needs to be installed!
+%---------------------------------------------------------------------------
+
+%define text_mode_hook()
+%{
+%   flyspell_mode;
+%}     

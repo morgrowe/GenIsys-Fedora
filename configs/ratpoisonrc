@@ -1,0 +1,12 @@
+# ratpoisonrc configuration file - creted by Simon Rowe on 7th Oct 2013
+
+exec /usr/bin/rpws init 4 -k
+
+# bind some keys to apps to run
+bind g exec /opt/google/chrome/chrome
+bind c exec rxvt -fn "xft:DejaVu Sans Mono:pixelsize:14" -fg white -bg black
+#bind c exec urxvt -fn "xft:DejaVu Sans Mono:pixelsize:14"
+
+# other misc commands
+set border 0
+

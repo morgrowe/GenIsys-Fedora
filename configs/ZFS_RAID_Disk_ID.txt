@@ -1,0 +1,23 @@
+
+
+Western Digital (WD) Blue 
+ - 4TB capacity
+ - SATA
+ - 64MB cache
+ - Date: 09 Jan 2016
+ - WWW: 50014EE20D09DD4E
+ - RPM: 5400
+ - S/N: WCC4E6RN2TD2
+ - MDL: WD40EZRZ-00WN9BO
+ - Marked: DISK-BLUE01
+
+Western Digital (WD) Blue 
+ - 4TB capacity
+ - SATA
+ - 64MB cache
+ - Date: 09 Jan 2016
+ - WWW: 50014EE2B7B4E897
+ - RPM: 5400
+ - S/N: WCC4E1LDYS6U
+ - MDL: WD40EZRZ-00WN9BO
+ - Marked: DISK-BLUE02

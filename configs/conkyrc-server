@@ -1,0 +1,94 @@
+#
+# conkeyrc - configuration file based on the default example from /etc/conky
+#
+#   Config file for:  SERVER
+#
+alignment top_right
+background yes
+border_width 1
+cpu_avg_samples 2
+default_color white
+default_outline_color white
+default_shade_color grey
+draw_borders no
+draw_graph_borders yes
+draw_outline no
+draw_shades no
+use_xft yes
+xftfont DejaVu Sans Mono:size=10
+gap_x 10
+gap_y 60
+minimum_size 5 5
+net_avg_samples 2
+no_buffers yes
+out_to_console no
+out_to_stderr no
+extra_newline no
+own_window yes
+own_window_class Conky
+own_window_type desktop
+own_window_transparent true
+own_window_argb_value 0
+own_window_argb_visual true
+stippled_borders 0
+update_interval 1.0
+uppercase no
+use_spacer none
+show_graph_scale no
+show_graph_range no
+double_buffer yes
+if_up_strictness link
+
+
+TEXT
+$nodename - $sysname $kernel on $machine 
+$hr
+${color grey}Uptime:$color $uptime
+${color grey}Frequency (in MHz):$color $freq
+${color grey}RAM Usage:$color $mem/$memmax - $memperc% ${membar 4}
+${color grey}Swap Usage:$color $swap/$swapmax - $swapperc% ${swapbar 4}
+${color grey}CPU Usage:$color $cpu% ${cpubar 4}
+${color grey}Processes:$color $processes  ${color grey}Running:$color $running_processes
+$hr
+${color grey}File systems:$color
+ /          ${fs_used /}/${fs_size /} ${fs_bar 6 /}
+ /datastore ${fs_used /datastore}/${fs_size /datastore} ${fs_bar 6 /datastore}
+
+
+${color grey}DiskIO:$color
+ /dev/sdc1   ${diskiograph sdc1 15,110 0000ff ff0000 -t}
+ /dev/md0    ${diskiograph md0 15,110 0000ff ff0000 -t}
+$hr
+
+${color grey}Networking:
+ ${if_up eth0}${color grey}Up:   $color ${upspeedgraph eth0 15,110 0000ff ff0000 -t} ${color grey}Actual:$color ${upspeed eth0}
+ ${color grey}Down: $color ${downspeedgraph eth0 15,110 0000ff ff0000 -t} ${color grey}Actual:$color ${downspeed eth0}
+${endif} ${if_up eth1}${color grey}Up:   $color ${upspeedgraph eth1 15,110 0000ff ff0000 -t} ${color grey}Actual:$color ${upspeed eth1}
+ ${color grey}Down: $color ${downspeedgraph eth1 15,110 0000ff ff0000 -t} ${color grey}Actual:$color ${downspeed eth1}
+${endif} ${if_up wlan0}${color grey}Up:   $color ${upspeedgraph wlan0 15,110 0000ff ff0000 -t} ${color grey}Actual:$color ${upspeed wlan0}
+ ${color grey}Down: $color ${downspeedgraph wlan0 15,110 0000ff ff0000 -t} ${color grey}Actual:$color ${downspeed wlan0} 
+${endif}
+$hr
+${color grey}Computer Temps:${color}
+ ${color grey}Temp Core 1: ${color} ${execpi 5 sensors | grep "Core 0" | awk '{print $3}'}
+ ${color grey}Temp Core 2: ${color} ${execpi 5 sensors | grep "Core 1" | awk '{print $3}'}
+ ${color grey}Temp Core 3: ${color} ${execpi 5 sensors | grep "Core 2" | awk '{print $3}'}
+ ${color grey}Temp Core 4: ${color} ${execpi 5 sensors | grep "Core 3" | awk '{print $3}'}
+
+${color grey}Fan Speeds:${color}
+ ${color grey}Fan RPM for Fan1:     ${color} ${execpi 5 sensors | grep "fan1" | awk '{print $2}'}
+ ${color grey}Fan RPM for Fan2:      ${color} ${execpi 5 sensors | grep -w "fan2" | awk '{print $2}'}
+$hr
+${color grey}Monitored Processes:${color}
+ ${if_running syncthing}${color green}syncthing OK$color${else}${color red}syncthing ERROR$color$endif
+
+$hr
+${color grey}Name              PID   CPU%   MEM%
+ ${color white} ${top name 1} ${top pid 1} ${top cpu 1} ${top mem 1}
+ ${color white} ${top name 2} ${top pid 2} ${top cpu 2} ${top mem 2}
+ ${color white} ${top name 3} ${top pid 3} ${top cpu 3} ${top mem 3}
+ ${color white} ${top name 4} ${top pid 4} ${top cpu 4} ${top mem 4}
+ ${color white} ${top name 5} ${top pid 5} ${top cpu 5} ${top mem 5}
+ ${color white} ${top name 6} ${top pid 6} ${top cpu 6} ${top mem 6}
+ ${color white} ${top name 7} ${top pid 7} ${top cpu 7} ${top mem 7}
+ ${color white} ${top name 8} ${top pid 8} ${top cpu 8} ${top mem 8}

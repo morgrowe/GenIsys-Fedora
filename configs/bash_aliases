@@ -1,0 +1,73 @@
+# setup location of our local unix apps
+# The $TOOLDIR is set in .bashrc to: TOOLDIR=$GENIFILES/assets
+#
+# Set some useful aliases below
+#
+# alter ls output
+alias ls='ls -CF --color=auto' 
+alias ll='ls -l --color=auto'
+alias la='ls -la --color=auto'
+alias lsd='ls -ltr --color=auto'
+alias lst='tree'
+#
+# useful aliases as small tools
+alias clean='rm *~ .*~ 2> /dev/null'
+alias vcheck='clamscan -r -i --bell .'
+alias dthumbs='find . -type f -name "Thumbs.db" -print -exec rm -rf {} \;'
+alias dmac='find . -type f -name ".DS_Store" -print -exec rm -rf {} \;'
+#
+# jump to directory locations
+alias gdbs='cd ~/Work/Revenue-Assurance/LIJ-Project/Databases/'
+alias gdev='cd ~/SyncData/Code-Store/'
+alias goc='cd ~/SyncData/Code-Store/c-code/'
+alias glib='cd ~/Sybil/Technical-Info'
+alias ggo='cd ~/SyncData/Code-Store/go-code/src/github.com/wiremoons'
+alias gtd='cd ${TOOLDIR}'
+alias gweb='cd ~/SyncData/Code-Store/WebSites'
+#
+# run scripts in MoonStore
+alias ds='${TOOLDIR}/doc-search'
+alias tcl='/usr/bin/rlwrap ${TOOLDIR}/tclsh'
+alias conwin='${TOOLDIR}/con-win'
+alias conwork='${TOOLDIR}/con-work'
+alias conbike='${TOOLDIR}/con-cycle'
+#
+# run commandline tools with defined parameters
+alias shownet='sudo netstat -tuape | grep -v tcp6 | grep -v udp6'
+alias emacs='emacs -nw'
+alias screen='screen -list ; sleep 2 ; screen -D -R'
+alias ubuntu-ver='lsb_release -a'
+alias chk-ssh='zgrep ssh /var/log/auth.log* | grep -i failed'
+alias qcon='telnet localhost 3010'
+alias iotop='sudo iotop -Pao'
+alias iftop='sudo iftop'
+alias dskstat='watch -t iostat'
+alias mirstat='sudo mdadm --query --detail /dev/md0'
+alias sshs='ssh simon@server.local'
+alias dirsum='du -sh *'
+alias gitstat='git fetch && git status'
+alias tagsgen='ctags -R --exclude=".git" && cscope -Rb'
+alias make='make -B'
+#alias f2brep='awk '($(NF-1) = /Ban/){print $NF}' /var/log/fail2ban.log | sort | uniq -c | sort -n'
+#
+# run X-Windows apps from server on our local system - remote gui apps
+alias rnaut='ssh -X simon@server.local "export NO_AT_BRIDGE=1 ; nohup nautilus &"'
+alias rhandb='ssh -X simon@server.local "export NO_AT_BRIDGE=1 ; nohup ghb &"'
+alias rchrome='ssh -X simon@server.local "export NO_AT_BRIDGE=1 ; nohup google-chrome &"'
+alias vncserver="ssh -t -L 5900:localhost:5900 server.local 'x11vnc -localhost -display :0'"
+alias tst='ssh -L 8090:127.0.0.1:8080 server.local'
+alias sshplex='ssh 10.0.10.10 -L 8888:localhost:32400'
+
+#
+# give out help info
+alias pine='echo "" ; echo "You mean \"alpine\" I believe Watson..."; echo ""'
+alias uedit='echo "" ; echo "You mean \"uex\" or \"ue\" I believe Watson..."; echo ""'
+# to create new use:   echo "put-your-secret-text-here" | openssl enc -base64 -e -aes-256-cbc -nosalt 
+alias ggh='echo "u9btYvV8G6L7otRe9nLjOZihAExO4dXKKz9TdQhoe7SFrBk8gBk8Qtwr+CX9mxnb" | openssl enc -base64 -d -aes-256-cbc -nosalt'
+
+
+
+
+
+
+

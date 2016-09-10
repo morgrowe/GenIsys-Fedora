@@ -1,0 +1,270 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+#
+#       bashrc file for wiremoons.com - stored in $GENIFILES/configs/bashrc
+#
+#           to use - add a symbolic link to you $HOME/.bashrc
+#
+# location of configuration and setup files - obtained from Git repo
+# and put in place by the 'Install-Fedora' script run before this one
+GENIFILES='/home/simon/GenIsys-Fedora'
+
+#####################################################################
+#
+#   below are standard .bashrc setup from a Linux distribution
+#
+#####################################################################
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+    *) return;;
+esac
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+	xterm*|rxvt*)
+		PS1="\[\e]0;${chroot_env:+($chroot_env)}\u@\h: \w\a\]$PS1"
+		;;
+	*)
+		;;
+esac
+
+# Alias definitions.
+# All held in a separate '.bash_aliases' file and sourced here
+#
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# bash completions:
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+	if [ -f /usr/share/bash-completion/bash_completion ]; then
+		. /usr/share/bash-completion/bash_completion
+	elif [ -f /etc/bash_completion ]; then
+		. /etc/bash_completion
+	fi
+fi
+
+#####################################################################
+#
+#     local adaptations below - added to above standard stuff
+#
+#####################################################################
+
+
+#-----------------------------------------------------------------------------
+#    SETUP env variables for standard system stuff which was not done above
+#-----------------------------------------------------------------------------
+
+# set locale to support UTF-8 in UK
+export LOCALE=en_GB.utf8
+export LANG=en_GB.UTF-8
+
+# configure journald output to include lines wider than the screen by wrapping them
+export SYSTEMD_LESS=FRXMK
+
+#-----------------------------------------------------------------------------
+#    SETUP command prompt dependant on what computer is being used 
+#-----------------------------------------------------------------------------
+# control if colour prompt below is used - have different colour for different computers
+# for more bash colour codes: https://wiki.archlinux.org/index.php/Color_Bash_Prompt
+#  [00m\] == text ; [01;30m\] == black ; [01;32m\] == green ; [01;34m\] == blue ; [01;35m\] == purple ; [01;36m\] == cyan ; 
+export color_prompt=yes
+# get out current hostname for use below - to manage prompt colours for different systems
+export HOSTNAME=`hostname`
+#
+# set variable identifying the chroot you work in (used in the 'prompt' setup below)
+if [ -z "${chroot_env:-}" ] && [ -r /etc/chroot_env ] ; then
+    chroot_env=$(cat /etc/chroot_env)
+fi
+# set the prompt - with different color for the 'user@host' element of the prompt
+#  if colour prompt - set different one for each host 
+if [ "$color_prompt" = yes ] ; then
+	if [ $HOSTNAME == blumoons ] ; then
+		# green prompt
+		PS1='${chroot_env:+($chroot_env)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+	fi
+	if [ $HOSTNAME == server ] ; then
+		# cyan prompt
+		PS1='${chroot_env:+($chroot_env)}\[\033[01;36m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+	fi
+	if [ $HOSTNAME == surfmoons ] ; then
+		# brown prompt
+		PS1='${chroot_env:+($chroot_env)}\[\033[01;34m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+	fi
+	if [ $HOSTNAME == alienmoons ] ; then
+		# purple prompt
+		PS1='${chroot_env:+($chroot_env)}\[\033[01;35m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+	fi
+else
+    PS1='${chroot_env:+($chroot_env)}\u@\h:\w\$ '
+fi
+unset color_prompt force_color_prompt
+
+
+#-----------------------------------------------------------------------------
+#    SETUP env variable $TOOLDIR to point to local scripts held in $GENIFILES
+#-----------------------------------------------------------------------------
+# Create ${TOOLDIR} env variable to store location for bin & scripts folder 
+# - only if it exists
+if [ -d $GENIFILES/assets ] ; then
+	TOOLDIR=$GENIFILES/assets
+fi
+export TOOLDIR
+
+#-----------------------------------------------------------------------------
+#    SETUP $PATH to include local apps and scripts held in $GENIFILES
+#-----------------------------------------------------------------------------
+# update PATH to include $GENIFILES bin & scripts folder if it exists
+if [ -d $GENIFILES/assets ] ; then
+	PATH=$GENIFILES/assets:"${PATH}"
+fi
+export PATH
+
+# enable vi editing mode on the command line use 'set -o vi' or use
+# 'set -o emacs' to change to the default emacs mode
+set -o vi
+
+#-----------------------------------------------------------------------------
+#    SETUP GOLANG  to point to our code path location in: ~/SyncData
+#-----------------------------------------------------------------------------
+# Add Go Language $GOPATH to the ~/SyncData/Code-Store/go-code Go code library
+if [ -d ~/SyncData/Code-Store/go-code ] ; then
+	GOPATH=~/SyncData/Code-Store/go-code/
+fi
+export GOPATH
+# Add Go $GOBIN to the location: $GOPATH/bin
+if [ -d $GOPATH/bin ] ; then
+	# OK - we are good to set it!
+	GOBIN=${GOPATH}bin
+fi
+export GOBIN
+
+# Add Go Language $GOROOT to point to the ~/SyncData/Gobin/linuxGo Go distribution 
+# location kept in the ~SyncData sub folder. This is a symbolic link to an actual
+# Golang install held in a sub folder such as 'linuxGo_1.7'
+if [ -d ~/SyncData/Gobin/linuxGo ] ; then
+	GOROOT=~/SyncData/Gobin/linuxGo
+fi
+export GOROOT
+
+# update PATH to include the Go distributions 'bin' directory if exists
+if [ -d ~/SyncData/Gobin/linuxGo/bin ] ; then
+	PATH=~/SyncData/Gobin/linuxGo/bin:"${PATH}"
+fi
+export PATH
+
+#-----------------------------------------------------------------------------
+#    SETUP OTHER ENVIRONMENT VARIABLES
+#-----------------------------------------------------------------------------
+
+# Add $ACRODB to the Sybil.db database location used by acrotool application
+if [ -d /datastore/Work/Scratch/Sybil ] && [ $HOSTNAME == server ] ; then
+	# set for 'server'
+	ACRODB=/datastore/Work/Scratch/Sybil/Sybil.db
+fi
+if [ -d $HOME/Work/Scratch/Sybil ] ; then
+	ACRODB=$HOME/Work/Scratch/Sybil/Sybil.db
+fi
+export ACRODB
+
+#-----------------------------------------------------------------------------
+#    SETUP SKYPE - improves jitter and speak quality
+#-----------------------------------------------------------------------------
+export PULSE_LATENCY_MSEC=60
+
+
+#-----------------------------------------------------------------------------
+#    SETUP Unison - syncs files and directories between computer systems
+#-----------------------------------------------------------------------------
+if [ -d ~/MoonStore/linux/Unison ] ; then
+	UNISON=~/MoonStore/linux/Unison
+fi
+export UNISON
+
+#-----------------------------------------------------------------------------
+#    SETUP Google Cloud services scripts
+#-----------------------------------------------------------------------------
+# The next line updates PATH for the Google Cloud SDK.
+#source '/datastore/SyncData/Downloads/Linux/GoogleCloudSDK/google-cloud-sdk/path.bash.inc'
+
+# The next line enables bash completion for gcloud.
+#source '/datastore/SyncData/Downloads/Linux/GoogleCloudSDK/google-cloud-sdk/completion.bash.inc'
+
+
+#-----------------------------------------------------------------------------
+#    SETUP Git
+#-----------------------------------------------------------------------------
+
+# Add bash tab completion for git commands (see earlier above for setting normal bash completions)
+#
+# if you see the error: "/usr/bin/gitk: line 3: exec: wish: not found." - comment out below
+#
+# set for 'Fedora' - if exists
+if [ -d /usr/share/bash-completion/completions/ ] && \
+   [ -f /usr/share/bash-completion/completions/git ] ; then
+	source /usr/share/bash-completion/completions/git
+fi
+# set for 'arch linux'
+if [ -d /usr/share/git/completion/ ] && \
+   [ -f /usr/share/git/completion/git-completion.bash ] ; then
+	source /usr/share/git/completion/git-completion.bash
+fi
+
+# check if git is installed - and if it is set up some env etc only set these
+# if there is not a personal git file in place though!  NB: change path for
+# other systems '/usr/bin/git' is fine for Fedora and Arch Linux :
+if [ -f /usr/bin/git ] && [ ! -f ~/.gitconfig ] ; then
+    # set the default config editor for git to be nano
+    git config --global core.editor "nano -w"
+    # set the git name and email to use for this account
+    git config --global user.name "Simon Rowe" git config --global user.email
+    "simon@wiremoons.com"
+    # set git to use a colour command prompt
+    git config --global color.ui true
+    # configure git to use email with 'msmtp' - you will need to install &
+    # configure
+    #git config --global sendemail.smtpserver /usr/local/bin/msmtp
+    # add a more useful 'git graph' alias to show details of repository
+    git config --global alias.graph 'log --graph --oneline --decorate --stat'
+fi
+#
+# check if in a screen session is running already: if [ -n "$STY" ]; then
+# printf "yes\n" ; else printf "no\n" ; fi If not and screen is installed ask
+# if a session is required by user...
+if [ ! -n "$STY" ] && [ -x /usr/bin/screen ] ; then
+    read -p "Do you want to run GNU screen  y/n " -t 3 -re REPLY
+    if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+        /usr/bin/screen -D -RR
+    else
+        printf "GNU screen not being used...\n"
+    fi
+fi
+

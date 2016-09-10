@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Name=Chrome - Google Chrome
+Icon=google-chrome
+Path=/usr/bin
+Exec=/opt/google/chrome/chrome
+StartupNotify=false
+StartupWMClass=google-chrome
+OnlyShowIn=Unity;
+X-UnityGenerated=true
+MimeType=x-scheme-handler/unknown;x-scheme-handler/about;x-scheme-handler/https;x-scheme-handler/http;text/html;
