@@ -69,11 +69,10 @@
 (package-initialize)
 ;;
 ;; auto-load any packages we are missing
-;;(unless (package-installed-p 'use-package)
-;;  (package-refresh-contents)
-;;  (package-install 'use-package))
-;;(eval-when-compile
-;;  (require 'use-package))
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-when-compile (require 'use-package))
 ;;(set (setq use-package-always-ensure t)
 ;;
 ;; List packages to obtain and install if needed below
