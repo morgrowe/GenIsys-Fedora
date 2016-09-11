@@ -20,8 +20,6 @@
 ;; Load a colour scheme
 ;;(load-theme 'tsdh-dark)
 (load-theme 'tsdh-light)
-
-
 ;;
 ;; set default languange and use typopunct-mode to be able to use
 ;; typographical quotes and em-dash etc
@@ -54,10 +52,20 @@
 (setq sentence-end-double-space nil)
 ;;
 ;; tell Emacs to use Aspell instead of default ispell
-;; make sure it is installed with: sudo pacman -S aspell aspell-en
+;; make sure it is installed - add packages: aspell aspell-en
 (setq-default ispell-program-name "aspell")
 ;;
-;; Emacs Packaging
+;; spell check as you type using `flyspell-mode'
+;; for all documents use flyspell-mode uncomment below:
+;;(setq-default flyspell-mode t)
+;; or just use flyspell-mode for these doucment types:
+(dolist (hook '(text-mode-hook))
+      (add-hook hook (lambda () (flyspell-mode 1))))
+(dolist (hook '(change-log-mode-hook log-edit-mode-hook))
+      (add-hook hook (lambda () (flyspell-mode -1))))
+;;
+;; EMACS PACKAGING
+;;
 ;; load the package management
 (require 'package)
 ;; To prevent initialising twice - run below first
@@ -73,7 +81,6 @@
   (package-refresh-contents)
   (package-install 'use-package))
 (eval-when-compile (require 'use-package))
-;;(set (setq use-package-always-ensure t)
 ;;
 ;; List packages to obtain and install if needed below
 ;;
@@ -106,15 +113,7 @@
 ;;
 (use-package flymake-go
   :ensure t)
-;;
-;; spell check as you type using `flyspell-mode'
-;; for all documents use flyspell-mode uncomment below:
-;;(setq-default flyspell-mode t)
-;; or just use flyspell-mode for these doucment types:
-(dolist (hook '(text-mode-hook))
-      (add-hook hook (lambda () (flyspell-mode 1))))
-(dolist (hook '(change-log-mode-hook log-edit-mode-hook))
-      (add-hook hook (lambda () (flyspell-mode -1))))
+
 ;;
 ;; enable abbrev mode and specify the file to keep, and save on exit
 (setq-default abbrev-mode t)
@@ -127,11 +126,14 @@
 ;; don't make pesky backup files
 (setq make-backup-files nil)
 ;;
-;; add key bindings
+;; ADD KEY BINDINGS
+;;
 ;; used to insert text into defined rectangle:
 (global-set-key (kbd "C-x r i") 'string-insert-rectangle)
 ;; bind key to start iedit mode - as is broken by default
 (define-key global-map (kbd "C-c ;") 'iedit-mode)
+;;
+;; TAB MANAGEMENT AND SETTINGS
 ;;
 ;; dont insert tabs - use spaces instead
 (setq-default indent-tabs-mode nil)
@@ -152,7 +154,7 @@
 (setq next-line-add-newlines nil)
 ;; show line numbers in files and add space between number and file's text / content
 (global-linum-mode t)
-(setq linum-format "%d ")
+(setq linum-format "%d  ")
 ;; Open unidentified files in text mode - as the default
 (setq default-major-mode 'text-mode)
 ;; Always prefer UTF-8 support
