@@ -150,7 +150,8 @@ export PATH
 
 # enable vi editing mode on the command line use 'set -o vi' or use
 # 'set -o emacs' to change to the default emacs mode
-set -o vi
+#set -o vi
+set -o emacs
 
 #-----------------------------------------------------------------------------
 #    SETUP GOLANG  to point to our code path location in: ~/SyncData
