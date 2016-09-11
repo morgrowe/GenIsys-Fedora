@@ -10,14 +10,18 @@
 ;;    Updated on 09 Jan 2016 - added text mode improvements for bullet handling
 ;;    Updated on 03 Jun 2016 - added CUA mode setting
 ;;	  Updated on 11 Sep 2016 - removed marmalade repo (cert error) added follow symlink command
+;;	  Updated on 11 Sep 2016 - added auto install of Emacs packages
 ;;
 ;;  NB:  you can reload this file once editied with:
 ;;     M-x load-file RET RET
-;;  
+;;  To find bracket issues run:   
+;;     M-x check-parens
 ;;
 ;; Load a colour scheme
 ;;(load-theme 'tsdh-dark)
 (load-theme 'tsdh-light)
+
+
 ;;
 ;; set default languange and use typopunct-mode to be able to use
 ;; typographical quotes and em-dash etc
@@ -52,6 +56,57 @@
 ;; tell Emacs to use Aspell instead of default ispell
 ;; make sure it is installed with: sudo pacman -S aspell aspell-en
 (setq-default ispell-program-name "aspell")
+;;
+;; Emacs Packaging
+;; load the package management
+(require 'package)
+;; To prevent initialising twice - run below first
+(setq package-enable-at-startup nil)   
+;; Add addtional repositories for package management
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+;; ensures the installed packages in ~/.emacs.d/elpa/ are all loaded for Emacs
+(package-initialize)
+;;
+;; auto-load any packages we are missing
+;;(unless (package-installed-p 'use-package)
+;;  (package-refresh-contents)
+;;  (package-install 'use-package))
+;;(eval-when-compile
+;;  (require 'use-package))
+;;(set (setq use-package-always-ensure t)
+;;
+;; List packages to obtain and install if needed below
+;;
+;; Go language support
+(use-package go-mode
+  :ensure t)
+;;
+;; powershell script editing support
+(use-package powershell
+  :ensure t)
+;;
+;; auto complete and support for c
+(use-package auto-complete
+  :ensure t)
+(use-package auto-complete-c-headers
+  :ensure t)
+;;
+;;
+(use-package yasnippet
+  :ensure t)
+;;
+;; 
+(use-package iedit
+  :ensure t)
+;;
+;;
+(use-package flycheck
+  :ensure t)
+;;
+;;
+(use-package flymake-go
+  :ensure t)
 ;;
 ;; spell check as you type using `flyspell-mode'
 ;; for all documents use flyspell-mode uncomment below:
@@ -103,15 +158,7 @@
 (setq default-major-mode 'text-mode)
 ;; Always prefer UTF-8 support
 (prefer-coding-system 'utf-8)
-;;
-;; Emacs Packaging
-;; load the package management
-(require 'package)
-;; Add addtional repositories for package management
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")))
-;; ensures the installed packages in ~/.emacs.d/elpa/ are all loaded for Emacs
-(package-initialize)
+
 ;;
 ;; c Source Code
 ;; setup for c source code
@@ -156,18 +203,11 @@
   ; Godef jump key binding
   (local-set-key (kbd "M-.") 'godef-jump))
 (add-hook 'go-mode-hook 'my-go-mode-hook)
+;;
+;; Git support
+;; Add packages to support Git use below:
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-	(flymake-go flycheck go-mode iedit powershell yasnippet auto-complete))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+;;
+;; Turn off audio and visual bell as they are annoying...
+(setq ring-bell-function 'ignore)
