@@ -15,6 +15,7 @@ alias clean='rm *~ .*~ 2> /dev/null'
 alias vcheck='clamscan -r -i --bell .'
 alias dthumbs='find . -type f -name "Thumbs.db" -print -exec rm -rf {} \;'
 alias dmac='find . -type f -name ".DS_Store" -print -exec rm -rf {} \;'
+alias chkgit='for d in `find ~ -name ".git"`; do cd $d/..; echo `pwd`:; git status; echo; done'
 #
 # jump to directory locations
 alias gdbs='cd ~/Work/Revenue-Assurance/LIJ-Project/Databases/'
