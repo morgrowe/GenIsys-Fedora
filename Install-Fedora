@@ -37,7 +37,7 @@ sudo dnf install http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree
 sudo dnf update
 # install ubuntu base packages we need
 sudo dnf install p7zip rlwrap ncdu fuse-sshfs clamav fail2ban \
-kernel-devel kernel-headers gcc dkms acpid
+kernel-devel kernel-headers gcc dkms acpid aspell aspell-en
 #
 # install antivirus
 #sudo freshclam
