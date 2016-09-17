@@ -182,6 +182,13 @@ if [ -d ~/SyncData/Gobin/linuxGo/bin ] ; then
 fi
 export PATH
 
+# update PATH to include the $GOBIN 'bin' directory if exists
+if [ -d $GOBIN ] ; then
+	PATH="${GOBIN}":"${PATH}"
+fi
+export PATH
+
+
 #-----------------------------------------------------------------------------
 #    SETUP OTHER ENVIRONMENT VARIABLES
 #-----------------------------------------------------------------------------
