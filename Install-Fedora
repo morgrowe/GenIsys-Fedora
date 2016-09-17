@@ -13,30 +13,32 @@ printf "\tScript: '%s'\n\tHostname:'%s'\n\tOS: '%s'\n\tUser '%s'\n\n" \
             "$0" "$HOSTNAME" "$(uname)" "$(whoami)"
 printf "\nThis installation script should be run after completing a 'server' or 'desktop' install of Fedora 24.\n"
 printf "\nEnter your root password when prompted so the packages can be install for you\n"
-sleep 3
+sleep 2
 #
 # set the hostname for the computer
 printf "\nQUESTION:\n"
 read -p "Enter the hostname for your computer : " -t 30 -re REPLY
-if [[ $REPLY != "" ]] ; then
+if [[ $REPLY != "" ]] && \
+	   [[ $REPLY != $(hostname) ]]; then
     sudo hostnamectl set-hostname "$REPLY"
     printf "\n\tComputer hostname now set to: '$(hostname)' - DONE\n"
 else
-    printf "\nYou need to set the hostname for your computer with:  sudo hostnamectl set-hostname \"pc-name-here\"\n"
+    printf "\nYou may need to set the hostname for your computer with:  sudo hostnamectl set-hostname \"pc-name-here\"\n"
+	printf "Current hostname is set to: '$(hostname)'\n"
 fi
 sleep 2
 #
 # ensure the packages lists is up to date
-sudo dnf update
+sudo dnf -y update
 #
 # add RPM Fusion Software Repos for 'free' and 'non-free' - check with 'dnf repolist' or 'dnf repolist all'
-sudo dnf install http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-sudo dnf install http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+sudo dnf -y install http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+sudo dnf -y install http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 #
 # now ensure the keys and package lists are up to date for above RPM Fusion
-sudo dnf update
+sudo dnf -y update
 # install ubuntu base packages we need
-sudo dnf install p7zip p7zip-plugins rlwrap ncdu fuse-sshfs clamav fail2ban \
+sudo dnf -y install p7zip p7zip-plugins rlwrap ncdu fuse-sshfs clamav fail2ban \
 kernel-devel kernel-headers gcc dkms acpid aspell aspell-en emacs-nox
 #
 # install antivirus
@@ -45,9 +47,9 @@ kernel-devel kernel-headers gcc dkms acpid aspell aspell-en emacs-nox
 #
 # Install additional 'desktop' packages also if required by user...
 printf "\nQUESTION:\n"
-read -p "Do you want to install additional 'desktop' type packages  y/n " -t 30 -re REPLY
+read -p "Do you want to install additional 'desktop' type packages?  y/n " -t 30 -re REPLY
 if [ $REPLY == y ] || [ $REPLY == Y ] ; then
-    sudo dnf install vlc rdesktop gimp gnome-tweak-tool simple-scan
+    sudo dnf -y install vlc rdesktop gimp gnome-tweak-tool simple-scan
     printf "DONE\n"
 else
     printf "\nAdditional packages NOT installed at user's request\n"
@@ -58,12 +60,12 @@ sleep 2
 # Install Nvidia graphics card driver if required by the user
 #    remove with:  dnf remove xorg-x11-drv-nvidia\*
 printf "\nQUESTION:\n"
-read -p "Install nVidia graphics card driver  y/n " -t 30 -re REPLY
+read -p "Install nVidia graphics card drivers?  y/n " -t 30 -re REPLY
 if [ $REPLY == y ] || [ $REPLY == Y ] ; then
     printf "\nDRIVER INSTALL - nVidia\n"
-    sudo dnf install akmod-nvidia "kernel-devel-uname-r == $(uname -r)"
-    sudo dnf install vdpauinfo libva-vdpau-driver libva-utils
-    sudo dnf update -y
+    sudo dnf -y install akmod-nvidia "kernel-devel-uname-r == $(uname -r)"
+    sudo dnf -y install vdpauinfo libva-vdpau-driver libva-utils
+    sudo dnf -y update
     printf "\n    nVidia Driver Install - restart to enable!\n"
 else
     printf "\nnVidia Driver packages NOT installed at user's request\n"
@@ -75,7 +77,7 @@ sleep 2
 #sudo dnf remove firefox firefox-locale-en flashplugin-installer
 
 # clean up any packages still left over that need to be cleaned out
-sudo dnf autoremove
+sudo dnf -y autoremove
 #
 #
 # check locale setting
@@ -85,7 +87,7 @@ printf "Checking for UTF-8 supprt in terminal...  "
 echo -e '\n        \xe2\x82\xac\n'
 printf "Euro symbol displayed above OK??\n"
 printf "\nQUESTION:\n"
-read -p "Do you want to locale setup for 'en_GB.UTF-8'  y/n " -t 30 -re REPLY
+read -p "Do you want to locale setup for 'en_GB.UTF-8'?  y/n " -t 30 -re REPLY
 if [ $REPLY == y ] || [ $REPLY == Y ] ; then
     printf "\nLOCALE SETUP\n"
     sudo localectl set-locale LANG=en_GB.utf8
@@ -117,12 +119,16 @@ if [ $REPLY == y ] || [ $REPLY == Y ] ; then
     printf "Openssh server displayed above OK??\n"
     printf "DONE\n"
 else
-    printf "\nOpenssh Server not setup at user's request\n"
+    printf "\nOpenssh Server setup not run at user's request\n"
 fi
 sleep 2
 
 #
-# TODO: install 'issue' to '/etc/issue.net'
+#
+# update /etc/issue and /etc/issue.net if required
+# cat /home/simon/GenIsys-Fedora/configs/issue >> /usr/lib/issue.net
+# cat /home/simon/GenIsys-Fedora/configs/issue >> /usr/lib/issue
+#
 # TODO: change '/etc/ssh/sshd_config' to block root logins & issue banner enable
 #
 # Install and setup complete - update user and finish up
