@@ -205,6 +205,10 @@
   (local-set-key (kbd "M-.") 'godef-jump))
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 ;;
+;; bind a global key to run: M-x compile
+(global-set-key "\C-x\C-m" 'compile)
+
+;;
 ;; Git support
 ;; Add packages to support Git use below:
 
