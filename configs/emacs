@@ -11,6 +11,7 @@
 ;;    Updated on 03 Jun 2016 - added CUA mode setting
 ;;	  Updated on 11 Sep 2016 - removed marmalade repo (cert error) added follow symlink command
 ;;	  Updated on 11 Sep 2016 - added auto install of Emacs packages
+;;	  Updated on 18 Sep 2016 - added auto install of multi-cursor package and key bindings
 ;;
 ;;  NB:  you can reload this file once editied with:
 ;;     M-x load-file RET RET
@@ -115,6 +116,10 @@
   :ensure t)
 
 ;;
+;; Mulitple-cursor package: https://github.com/magnars/multiple-cursors.el
+(use-package multiple-cursors
+  :ensure t)
+;;
 ;; enable abbrev mode and specify the file to keep, and save on exit
 (setq-default abbrev-mode t)
 (read-abbrev-file "~/.abbrev_defs")
@@ -161,8 +166,8 @@
 (prefer-coding-system 'utf-8)
 
 ;;
-;; c Source Code
-;; setup for c source code
+;; C Source Code
+;; Setup for c source code
 ;;
 ;; make sure c mode is enabled for .h .c or .cpp files
 (require 'cc-mode)
@@ -172,25 +177,39 @@
 (setq-default tab-width 4 indent-tabs-mode t)
 ;; auto indent code when return is pressed 
 (define-key c-mode-base-map (kbd "RET") 'newline-and-indent)
+;;
 ;; turn on automatic bracket insertion by pairs. New in Emacs 24
 (electric-pair-mode 1)
-;; enable auto-complete for source code file - below is generic for all languages
+;;
+;; enable auto-complete for source code files - below is generic for all languages
 (require 'auto-complete)
 (require 'auto-complete-config)
 (ac-config-default)
+;;
 ;; add yasnippet support for all languages, and enable it
 (require 'yasnippet)
 (yas-global-mode 1)
+;;
 ;; define a function to load auto-complete-c-header called on c hooks being started
 (defun my:ac-c-header-init ()
   (require 'auto-complete-c-headers)
   (add-to-list 'ac-sources 'ac-source-c-headers))
 (add-hook 'c-mode-hook 'my:ac-c-header-init)
+;;
 ;; enable flymake for syntax checking - require below in your Makefile:
 ;; check-syntax:
 ;;     gcc -o nul -S ${CHK_SOURCES}
 ;; to use `M-x flymake` or add "(add-hook 'find-file-hook 'flymake-find-file-hook)"
 (require 'flymake)
+;;
+;; enable and configure key for multiple-cursor support
+(require 'multiple-cursors)
+;; add a cursor to each line when an active region that spans multiple lines
+;;(global-set-key "\C-c \C-c" 'mc/edit-lines)
+;;add multiple cursors not based on continuous lines, but based on keywords in the buffer
+(global-set-key (kbd "C-c d") 'mc/mark-next-like-this)
+;;(global-set-key "\C-<" 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c a") 'mc/mark-all-like-this)
 ;;
 ;; GO LANG
 ;; provide support for Go language: M-x list-packages 
