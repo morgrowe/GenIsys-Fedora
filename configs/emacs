@@ -64,6 +64,10 @@
       (add-hook hook (lambda () (flyspell-mode 1))))
 (dolist (hook '(change-log-mode-hook log-edit-mode-hook))
       (add-hook hook (lambda () (flyspell-mode -1))))
+;; run flyspell on current file buffer to find all spelling errors
+(global-set-key (kbd "C-c s") 'flyspell-buffer)
+;; flyspell next highlighted word that is a spelling error
+(global-set-key (kbd "C-c w") 'flyspell-goto-next-error)
 ;;
 ;; EMACS PACKAGING
 ;;
@@ -87,6 +91,8 @@
 ;;
 ;; Go language support
 (use-package go-mode
+  :ensure t)
+(use-package go-autocomplete
   :ensure t)
 ;;
 ;; powershell script editing support
