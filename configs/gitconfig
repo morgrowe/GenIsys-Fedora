@@ -4,7 +4,7 @@
 #	when logging in from the command line - do not the GitHub password!
 #
 [core]
-	editor = nano -w
+	editor = emacs
 	pager = less -r
 [user]
 	name = Simon Rowe
