@@ -21,6 +21,11 @@ case $- in
     *) return;;
 esac
 
+# Change font when on a TTY instead of Gnome Terminal
+if [ $TERM = linux ]; then
+    setfont Lat2-Terminus16
+fi
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
