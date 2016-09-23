@@ -57,6 +57,20 @@ fi
 sleep 2
 #
 #
+# Install ZFS on Linux repo and ZFS support packages also if required by user...
+printf "\nQUESTION:\n"
+read -p "Do you want to install 'ZFS' repo and support packages?  y/n " -t 30 -re REPLY
+if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+	sudo dnf install http://download.zfsonlinux.org/fedora/zfs-release$(rpm -E %dist).noarch.rpm
+	sudo gpg --quiet --with-fingerprint /etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux
+	sudo dnf -y install kernel-devel zfs
+    printf "DONE\n"
+else
+    printf "\nAdditional ZFS packages NOT installed at user's request\n"
+fi
+sleep 2
+#
+#
 # Install Nvidia graphics card driver if required by the user
 #    remove with:  dnf remove xorg-x11-drv-nvidia\*
 printf "\nQUESTION:\n"
