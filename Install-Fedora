@@ -31,10 +31,6 @@ sleep 2
 # ensure the packages lists is up to date
 sudo dnf -y update
 #
-# add RPM Fusion Software Repos for 'free' and 'non-free' - check with 'dnf repolist' or 'dnf repolist all'
-sudo dnf -y install http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-sudo dnf -y install http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-#
 # now ensure the keys and package lists are up to date for above RPM Fusion
 sudo dnf -y update
 # install ubuntu base packages we need
@@ -49,8 +45,15 @@ kernel-devel kernel-headers gcc dkms acpid aspell aspell-en emacs-nox
 printf "\nQUESTION:\n"
 read -p "Do you want to install additional 'desktop' type packages?  y/n " -t 30 -re REPLY
 if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+	#
+	# add RPM Fusion Software Repos for 'free' and 'non-free' - check with 'dnf repolist' or 'dnf repolist all'
+	printf "Adding 'free' and 'non-free' RPM Fusion repos...\n"
+	sudo dnf -y install http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+	sudo dnf -y install http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+	printf "\nDONE\n"
+	printf "Adding additonal desktop software..."
     sudo dnf -y install vlc rdesktop gimp gnome-tweak-tool simple-scan
-    printf "DONE\n"
+    printf "\nDONE\n"
 else
     printf "\nAdditional packages NOT installed at user's request\n"
 fi
@@ -73,23 +76,33 @@ sleep 2
 #
 # Install Nvidia graphics card driver if required by the user
 #    remove with:  dnf remove xorg-x11-drv-nvidia\*
-printf "\nQUESTION:\n"
-read -p "Install nVidia graphics card drivers?  y/n " -t 30 -re REPLY
-if [ $REPLY == y ] || [ $REPLY == Y ] ; then
-    printf "\nDRIVER INSTALL - nVidia\n"
-    sudo dnf -y install akmod-nvidia "kernel-devel-uname-r == $(uname -r)"
-    sudo dnf -y install vdpauinfo libva-vdpau-driver libva-utils
-    sudo dnf -y update
-    printf "\n    nVidia Driver Install - restart to enable!\n"
-else
-    printf "\nnVidia Driver packages NOT installed at user's request\n"
-fi
-sleep 2
+#printf "\nQUESTION:\n"
+#read -p "Install nVidia graphics card drivers?  y/n " -t 30 -re REPLY
+#if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+    #printf "\nDRIVER INSTALL - nVidia\n"
+    #sudo dnf -y update
+	#sudo dnf install kernel-devel kernel-headers gcc dkms acpid
+	#sudo echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf
+	# Edit /etc/sysconfig/grub append  rd.driver.blacklist=nouveau
+	# grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg
+	# dnf remove xorg-x11-drv-nouveau
+	# mv /boot/initramfs-$(uname -r).img /boot/initramfs-$(uname -r)-nouveau.img
+	# dracut /boot/initramfs-$(uname -r).img $(uname -r)
+	# systemctl set-default multi-user.target
+	# reboot
+	# run install script as root
+	# systemctl set-default graphical.target
+	# reboot
+    # dnf install vdpauinfo libva-vdpau-driver libva-utils
+    # sudo dnf -y autoremove
+	# 
+    #printf "\n    nVidia Driver Install - restart to enable!\n"
+#else
+#    printf "\nnVidia Driver packages NOT installed at user's request\n"
+#fi
+#sleep 2
 #
 #
-# remove Fedora packages from the system we dont use or need
-#sudo dnf remove firefox firefox-locale-en flashplugin-installer
-
 # clean up any packages still left over that need to be cleaned out
 sudo dnf -y autoremove
 #
@@ -119,6 +132,13 @@ sudo systemd-tmpfiles --create --prefix /var/log/journal
 sudo systemctl restart systemd-journald
 sudo gpasswd -a simon systemd-journal
 printf "\nJournald made persistent across reboots\n"
+#
+#
+#
+printf "\nSetting 'swappiness' to value of '1'...\n"
+sudo sysctl -w vm.swappiness=1
+printf "If the command: 'sudo sysctl -a | grep vm.swappiness' does not show '1' then\n"
+printf "run the command: ' echo "vm.swappiness = 10" >> /etc/sysctl.d/99-sysctl.conf ' as root"
 #
 #
 # start now and enable on boot Openssh server
