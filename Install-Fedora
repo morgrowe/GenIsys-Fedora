@@ -33,9 +33,9 @@ sudo dnf -y update
 #
 # now ensure the keys and package lists are up to date for above RPM Fusion
 sudo dnf -y update
-# install ubuntu base packages we need
+# install Fedora base packages we need
 sudo dnf -y install p7zip p7zip-plugins rlwrap ncdu fuse-sshfs clamav fail2ban \
-kernel-devel kernel-headers gcc dkms acpid aspell aspell-en emacs-nox
+kernel-devel kernel-headers gcc dkms acpid aspell aspell-en emacs-nox screen
 #
 # install antivirus
 #sudo freshclam
@@ -127,18 +127,39 @@ else
 fi
 sleep 2
 #
+# 
 # make sure journald logs are persistent across reboots
-sudo systemd-tmpfiles --create --prefix /var/log/journal
-sudo systemctl restart systemd-journald
-sudo gpasswd -a simon systemd-journal
-printf "\nJournald made persistent across reboots\n"
+printf "\nQUESTION:\n"
+read -p "Do you want to make systemd-journal persistant across reboots?  y/n " -t 30 -re REPLY
+if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+    printf "\nJOURNALD SETUP\n"
+	sudo systemd-tmpfiles --create --prefix /var/log/journal
+	sudo systemctl restart systemd-journald
+	sudo gpasswd -a simon systemd-journal
+    printf "DONE\n"
+else
+    printf "\nJournald setup not run at user's request\n"
+fi
+sleep 2
 #
-#
-#
-printf "\nSetting 'swappiness' to value of '1'...\n"
-sudo sysctl -w vm.swappiness=1
-printf "If the command: 'sudo sysctl -a | grep vm.swappiness' does not show '1' then\n"
-printf "run the command: ' echo "vm.swappiness = 10" >> /etc/sysctl.d/99-sysctl.conf ' as root"
+# 
+# make sure the setting 'swappiness' has a value of '1'
+printf "\nQUESTION:\n"
+read -p "Do you want to make 'swappiness' have a value of '1'?  y/n " -t 30 -re REPLY
+if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+    printf "\nSWAPPINESS SETUP\n"
+	if [ $(grep -ic "vm.swappiness = 1" /etc/sysctl.d/99-sysctl.conf ) -gt 0 ] ; then
+		printf "swappiness already set to '1' in file: '/etc/sysctl.d/99-sysctl.conf'\n"
+	else
+		printf "Setting swappiness to '1' in file: '/etc/sysctl.d/99-sysctl.conf'\n"
+		sudo printf "\n%s\n" "vm.swappiness = 1" | sudo tee -a /etc/sysctl.d/99-sysctl.conf
+	fi
+	sudo sysctl -w vm.swappiness=1
+    printf "DONE\n"
+else
+    printf "\nSwappiness setup not run at user's request\n"
+fi
+sleep 2
 #
 #
 # start now and enable on boot Openssh server
@@ -156,7 +177,40 @@ else
     printf "\nOpenssh Server setup not run at user's request\n"
 fi
 sleep 2
-
+#
+#
+# Add in '/etc/hosts' block list
+printf "\nQUESTION:\n"
+read -p "Do you want to install '/etc/hosts' block list ?  y/n " -t 30 -re REPLY
+if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+    printf "\nHOSTS BLOCK LIST SETUP\n"
+	if [ ! -d $HOME/scratch ] ; then
+		printf "Creating directory ~/scratch...\n"
+		mkdir $HOME/scratch
+	fi
+	printf "Downloading new '/etc/hosts' file from GitHub to '~/scratch' directory...\n"
+	if [ -x /usr/bin/curl ] ; then
+		curl https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts -o $HOME/scratch/hosts
+		printf "Installing new '/etc/hosts' file...\n"
+		sudo cp /etc/hosts /etc/hosts-backup-$(date +%Y%b%d_%H%M%S)
+		sudo cp $HOME/scratch/hosts /etc/hosts
+		printf "Restarting DNS resolver...\n"
+		sudo systemctl restart NetworkManager.service
+	else
+		printf "\nERROR: Unable to find: '/usr/bin/curl'\n"
+	fi
+    printf "DONE\n"
+else
+    printf "\nBlock list setup not run at user's request\n"
+fi
+sleep 2
+#
+# check if need to add setting in support of package 'nss_mdns'
+#if [ ! $(grep -ic "files mdns dns" /etc/nsswitch.conf ) -gt 0 ] ; then
+#	printf "file '/etc/nsnswitch has 'mdns' ...    SKIPPING\n"
+#else
+#	printf "\nedit '/etc/nsswitch.conf' --> change 'hosts: files dns'  to  'hosts: files mdns dns'\n"
+#fi
 #
 #
 # update /etc/issue and /etc/issue.net if required
