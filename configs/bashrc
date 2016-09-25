@@ -287,14 +287,13 @@ fi
 # check if in a screen session is running already: if [ -n "$STY" ]; then
 # printf "yes\n" ; else printf "no\n" ; fi If not and screen is installed ask
 # if a session is required by user...
+
 if [ ! -n "$STY" ] && [ -x /usr/bin/screen ] ; then
-    read -p "Do you want to run GNU screen  y/n " -t 3 -re REPLY
-    if [[ $REPLY == y ]] || [[ $REPLY == Y ]] ; then
-        /usr/bin/screen -D -RR
-    else
-        printf "GNU screen not being used...\n"
-    fi
-else
-    printf "GNU screen not found...\n"
+   read -p "Do you want to run GNU screen  y/n " -t 3 -re REPLY
+   if [[ $REPLY == y ]] || [[ $REPLY == Y ]] ; then
+   	  /usr/bin/screen -D -RR
+   else
+	  printf "GNU screen not being used at users request...\n"
+   fi
 fi
 
