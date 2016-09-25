@@ -268,16 +268,33 @@ if [ -f /usr/bin/git ] && [ ! -f ~/.gitconfig ] ; then
     # add a more useful 'git graph' alias to show details of repository
     git config --global alias.graph 'log --graph --oneline --decorate --stat'
 fi
+
+#-----------------------------------------------------------------------------
+#    SETUP ssh-agent --> to cache ssh keys and passphrases on login
+#-----------------------------------------------------------------------------
+#
+if ! pgrep -u $USER ssh-agent > /dev/null; then
+    ssh-agent > ~/.ssh-agent-thing
+fi
+if [[ "$SSH_AGENT_PID" == "" ]]; then
+    eval $(<~/.ssh-agent-thing)
+fi
+
+#-----------------------------------------------------------------------------
+#    SETUP offer to run screen on login
+#-----------------------------------------------------------------------------
 #
 # check if in a screen session is running already: if [ -n "$STY" ]; then
 # printf "yes\n" ; else printf "no\n" ; fi If not and screen is installed ask
 # if a session is required by user...
 if [ ! -n "$STY" ] && [ -x /usr/bin/screen ] ; then
     read -p "Do you want to run GNU screen  y/n " -t 3 -re REPLY
-    if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+    if [[ $REPLY == y ]] || [[ $REPLY == Y ]] ; then
         /usr/bin/screen -D -RR
     else
         printf "GNU screen not being used...\n"
     fi
+else
+    printf "GNU screen not found...\n"
 fi
 
