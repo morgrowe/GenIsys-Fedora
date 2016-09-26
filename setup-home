@@ -23,10 +23,10 @@ fi
 
 printf "\nLINKING & CREATING DIRECTORIES\n\n"
 #
-# if not on computer 'SERVER' :
+# if not on computer 'coremoons' :
 #
-if [ $HOSTNAME != server ] ; then
-    # Check and create if needed the ~/SyncData directories under $HOME - expect for SERVER
+if [ $HOSTNAME != coremoons ] ; then
+    # Check and create if needed the ~/SyncData directories under $HOME - expect for coremoons
     if [ ! -d $HOME/SyncData ] ; then
         printf "Location '$HOME/SyncData' does not exist creating structure\n"
         mkdir $HOME/SyncData
@@ -110,10 +110,10 @@ if [ $HOSTNAME != server ] ; then
       echo "        Link ~/Work already exists - skipping"
     fi
 #
-# if on computer 'SERVER' set up differently:
+# if on computer 'coremoons' set up differently as is our local server:
 #
-elif [ $HOSTNAME == server ] ; then
-    # Check and create if needed the ~/SyncData directories under $HOME - expect for SERVER
+elif [ $HOSTNAME == coremoons ] ; then
+    # Check and create if needed the ~/SyncData directories under $HOME - expect for coremoons
     if [ ! -d $HOME/SyncData ] ; then
         printf "Location '$HOME/SyncData' does not exist creating structure\n"
         mkdir $HOME/SyncData
@@ -192,7 +192,7 @@ elif [ $HOSTNAME == server ] ; then
     else
       echo "        Link ~/Work already exists - skipping"
     fi
-# not SERVER or some other computer - must be an error...
+# not coremoons or some other computer - must be an error...
 else
   echo "        WARNING: unable to identify your computer - skipping directory setup"
 fi
@@ -359,17 +359,17 @@ else
 	echo "        ~/.conkyrc (BLUMOONS) already exists - skipping"
 fi
 
-# SERVER: if there is not already a .conkyrc as a file or symbolic link - 
-# and the MoonStore file exists too :
+# coremoons: if there is not already a .conkyrc as a file or symbolic link - 
+# and the config file exists too :
 if [ ! -f ~/.conkyrc ] && \
    [ ! -L ~/.conkyrc ] && \
-   [ -f $GENIFILES/configs/conkyrc-server ] && \
-   [ $HOSTNAME == server ] ; then
-	echo "Linking .conkyrc (SERVER)..."
-	ln -s $GENIFILES/configs/conkyrc-server ~/.conkyrc
+   [ -f $GENIFILES/configs/conkyrc-coremoons ] && \
+   [ $HOSTNAME == coremoons ] ; then
+	echo "Linking .conkyrc (coremoons)..."
+	ln -s $GENIFILES/configs/conkyrc-coremoons ~/.conkyrc
 	echo "        DONE"
 else
-	echo "        ~/.conkyrc (SERVER) already exists - skipping"
+	echo "        ~/.conkyrc (coremoons) already exists - skipping"
 fi
 
 #~/.config/gtk-3.0/settings.ini

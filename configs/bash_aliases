@@ -44,21 +44,21 @@ alias iotop='sudo iotop -Pao'
 alias iftop='sudo iftop'
 alias dskstat='watch -t iostat'
 alias mirstat='sudo mdadm --query --detail /dev/md0'
-alias sshs='ssh simon@server.local'
+alias sshs='ssh simon@coremoons.local'
 alias sshse='ssh simon@wiremoons.ddns.net'
 alias dirsum='du -sh *'
 alias gitstat='git fetch && git status'
 alias tagsgen='ctags -R --exclude=".git" && cscope -Rb'
 alias make='make -B'
-alias sync2server='rsync -PhaWLe ssh simon@server.local:/datastore/ /datastore/ --exclude ".Trash-1000/" --exclude "lost+found/"'
+alias sync2server='rsync -PhaWLe ssh simon@coremoons.local:/datastore/ /datastore/ --exclude ".Trash-1000/" --exclude "lost+found/"'
 #alias f2brep='awk '($(NF-1) = /Ban/){print $NF}' /var/log/fail2ban.log | sort | uniq -c | sort -n'
 #
 # run X-Windows apps from server on our local system - remote gui apps
-alias rnaut='ssh -X simon@server.local "export NO_AT_BRIDGE=1 ; nohup nautilus &"'
-alias rhandb='ssh -X simon@server.local "export NO_AT_BRIDGE=1 ; nohup ghb &"'
-alias rchrome='ssh -X simon@server.local "export NO_AT_BRIDGE=1 ; nohup google-chrome &"'
-alias vncserver="ssh -t -L 5900:localhost:5900 server.local 'x11vnc -localhost -display :0'"
-alias tst='ssh -L 8090:127.0.0.1:8080 server.local'
+alias rnaut='ssh -X simon@coremoons.local "export NO_AT_BRIDGE=1 ; nohup nautilus &"'
+alias rhandb='ssh -X simon@coremoons.local "export NO_AT_BRIDGE=1 ; nohup ghb &"'
+alias rchrome='ssh -X simon@coremoons.local "export NO_AT_BRIDGE=1 ; nohup google-chrome &"'
+alias vncserver="ssh -t -L 5900:localhost:5900 coremoons.local 'x11vnc -localhost -display :0'"
+alias tst='ssh -L 8090:127.0.0.1:8080 coremoons.local'
 alias sshplex='ssh 10.0.10.10 -L 8888:localhost:32400'
 
 #
