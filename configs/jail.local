@@ -1,0 +1,17 @@
+# Fail2ban Config File : /etc/fail2ban/jail.local
+#
+# created by Simon Rowe on 27 Sep 2016
+#
+
+[DEFAULT]
+# Ban hosts for five hours:
+bantime = 18000
+
+# Override /etc/fail2ban/jail.d/00-firewalld.conf:
+# Use: ' ipset list ' to see banned ips
+banaction = firewallcmd-ipset
+
+# jails to create are below
+
+[sshd]
+enabled = true
