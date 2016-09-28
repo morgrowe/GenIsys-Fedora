@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Syncthing</short>
+  <description>Syncthing file syncing application</description>
+  <port port="22000" protocol="tcp"/>
+  <port port="21027" protocol="udp"/>
+</service>
