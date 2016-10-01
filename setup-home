@@ -21,6 +21,10 @@ if [ ! -d $GENIFILES ] ; then
     exit
 fi 
 
+########################################################
+#  set up for all except server
+########################################################
+#
 printf "\nLINKING & CREATING DIRECTORIES\n\n"
 #
 # if not on computer 'coremoons' :
@@ -109,6 +113,11 @@ if [ $HOSTNAME != coremoons ] ; then
     else
       echo "        Link ~/Work already exists - skipping"
     fi
+
+
+########################################################
+#  set below for server only
+########################################################
 #
 # if on computer 'coremoons' set up differently as is our local server:
 #
@@ -198,6 +207,10 @@ else
 fi
 
 
+########################################################
+#   Pull in GitHub repos locally
+########################################################
+
 echo "Cloning Sybil data to ~/Sybil..."
 if [ ! -d ~/Sybil ] ; then
         echo "       Enter your passphrase to see your GitHub key..."
@@ -209,14 +222,10 @@ else
 	echo "        ~/Sybil already exists - skipping"
 fi
 
-echo "Creating ~/.unison..."
-if [ ! -d ~/.unison ] && \
-   [ ! -L ~/.unison ] ; then
-	mkdir ~/.unison
-	echo "        DONE"
-else
-	echo "        ~/.unison already exists - skipping"
-fi
+
+########################################################
+#   Link files and diretories to $HOME
+########################################################
 
 echo ""
 echo "LINKING & CREATING FILES"
