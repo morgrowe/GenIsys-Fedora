@@ -23,4 +23,4 @@
 # used from terminal window - window size to scale
 #rdesktop -a 24 -g 90% -z -x l -r clipboard:PRIMARYCLIPBOARD -k en-gb -u simon -r sound:local -r disk:Work=/home/simon/Work -r disk:MStore=/home/simon/MoonStore -x 0x80 10.0.10.101 2> /dev/null &
 # used from terminal window - window full screen
-rdesktop -a 24 -f -z -x l -r clipboard:PRIMARYCLIPBOARD -k en-gb -u simon -r sound:local -r disk:Work=/home/simon/Work -r disk:MStore=/home/simon/MoonStore -x 0x80 10.0.10.104 2> /dev/null &
+rdesktop -a 24 -f -z -x l -r clipboard:PRIMARYCLIPBOARD -k en-gb -u simon -r sound:local -r disk:Work=/home/simon/Work -r disk:SData=/home/simon/SyncData -x 0x80 10.0.10.80 2> /dev/null &

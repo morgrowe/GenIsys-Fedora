@@ -17,5 +17,5 @@
 #           -k en-gb                  == use UK English keyboard map
 #           -r clipboard:PRIMARYCLIPBOARD == configure clipboard
 #
-rdesktop -a 16 -g 1540x1020 -z -x l -r clipboard:PRIMARYCLIPBOARD -k en-gb -u simon -r sound:local -x 0x80 10.0.10.10 2> /dev/null &
+rdesktop -a 16 -g 1540x1020 -z -x l -r clipboard:PRIMARYCLIPBOARD -k en-gb -u simon@wiremoons.com -r sound:local -x 0x80 10.0.10.10 2> /dev/null &
 
