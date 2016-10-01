@@ -68,3 +68,5 @@ find . -name "README" -type f -print -exec chmod 664 {} \;
 find . -name ".gitattributes" -type f -print -exec chmod 664 {} \;
 # set specific config files (-type f) contained in MoonStore 'config' directory
 #find /home/simon/MoonStore/apps/linux/configs/ -type f -print -exec chmod 664 {} \;
+chmod 755 $HOME/SyncData/Gobin/linuxGo/pkg/tool/linux_amd64/*
+chmod 755 $HOME/SyncData/Gobin/linuxGo/bin/*
