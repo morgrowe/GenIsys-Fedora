@@ -92,16 +92,6 @@ if [ $HOSTNAME != coremoons ] ; then
       echo "        Link ~/Downloads already exists - skipping"
     fi
 
-    #echo "Linking ~/Pictures/Photos to /datastore/Photos ..."
-    #if [ -d /datastore/Photos ] && \
-    #   [ -d ~/Pictures ] && \
-    #   [ ! -L ~/Pictures/Photos ] ; then
-    #  ln -s /datastore/Photos ~/Pictures/Photos
-    #  echo "        DONE"
-    #else
-    #  echo "        Link ~/Pictures/Photos to /datastore/Photos already exists - skipping"
-    #fi
-
     echo "Linking ~/Work to $HOME/SyncData/Work ..."
     if [ -d $HOME/SyncData/Work ] && \
        [ ! -L ~/Work ] && \
@@ -113,6 +103,18 @@ if [ $HOSTNAME != coremoons ] ; then
     else
       echo "        Link ~/Work already exists - skipping"
     fi
+
+    echo "Removing unwanted $HOME directories:  ~/Pictures ~/Music ~/Document ~/Videos ..."
+    if [ -d ~/Pictures ] && \
+       [ -d ~/Documents ] && \
+       [ -d ~/Music ] && \
+	   [ -d ~/Videos ] ; then
+		rmdir ~/Documents/ ~/Pictures/ ~/Music/ ~/Videos/
+		echo "        DONE"
+    else
+      echo "        four directories to remove not found - skipping"
+    fi
+
 
 
 ########################################################
