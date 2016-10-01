@@ -19,8 +19,9 @@
 ;;     M-x check-parens
 ;;
 ;; Load a colour scheme
-;;(load-theme 'tsdh-dark)
-(load-theme 'tsdh-light)
+(load-theme 'tsdh-dark)
+;;(load-theme 'tsdh-light)
+;;(load-theme 'deeper-blue)
 ;;
 ;; set default languange and use typopunct-mode to be able to use
 ;; typographical quotes and em-dash etc
