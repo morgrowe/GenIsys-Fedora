@@ -204,6 +204,21 @@ else
     printf "\nBlock list setup not run at user's request\n"
 fi
 sleep 2
+
+#
+#
+# Update font cache if needed?
+printf "\nQUESTION:\n"
+read -p "Do you want to update the system font cache ?  y/n " -t 30 -re REPLY
+if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+    printf "\nREFRESH SYSTEM FONT CACHE\n"
+	fc-cache -fv
+    printf "\nDONE\n"
+else
+    printf "\nFont cache refresh not run at user's request\n"
+fi
+sleep 2
+
 #
 # check if need to add setting in support of package 'nss_mdns'
 #if [ ! $(grep -ic "files mdns dns" /etc/nsswitch.conf ) -gt 0 ] ; then
