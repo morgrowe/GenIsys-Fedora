@@ -107,6 +107,7 @@ if [ $HOSTNAME == coremoons ] ; then
 	printf "\nDONE\n"
 	#
 	# add firewall exception files for firewalld
+	# TODO: fix below as checking does not work as only root can access these files...
 	printf "Adding 'firewalld' service exception files - if needed...\n"
 	if [ ! -f /etc/firewalld/services/Syncthing.xml ] ; then
 		sudo cp $GENIFILES/configs/Syncthing.xml /etc/firewalld/services/Syncthing.xml
