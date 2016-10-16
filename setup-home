@@ -4,7 +4,6 @@
 #  Fedora Linux on a computer
 #
 # location of configuration and setup files - obtained from Git repo
-# and put in place by the 'Install-Fedora' script run before this one
 GENIFILES='/home/simon/GenIsys-Fedora'
 #
 #
@@ -21,6 +20,10 @@ if [ ! -d $GENIFILES ] ; then
     exit
 fi 
 
+########################################################
+#  set up for all except server
+########################################################
+#
 printf "\nLINKING & CREATING DIRECTORIES\n\n"
 #
 # if not on computer 'coremoons' :
@@ -88,16 +91,6 @@ if [ $HOSTNAME != coremoons ] ; then
       echo "        Link ~/Downloads already exists - skipping"
     fi
 
-    #echo "Linking ~/Pictures/Photos to /datastore/Photos ..."
-    #if [ -d /datastore/Photos ] && \
-    #   [ -d ~/Pictures ] && \
-    #   [ ! -L ~/Pictures/Photos ] ; then
-    #  ln -s /datastore/Photos ~/Pictures/Photos
-    #  echo "        DONE"
-    #else
-    #  echo "        Link ~/Pictures/Photos to /datastore/Photos already exists - skipping"
-    #fi
-
     echo "Linking ~/Work to $HOME/SyncData/Work ..."
     if [ -d $HOME/SyncData/Work ] && \
        [ ! -L ~/Work ] && \
@@ -109,6 +102,23 @@ if [ $HOSTNAME != coremoons ] ; then
     else
       echo "        Link ~/Work already exists - skipping"
     fi
+
+    echo "Removing unwanted $HOME directories:  ~/Pictures ~/Music ~/Document ~/Videos ..."
+    if [ -d ~/Pictures ] && \
+       [ -d ~/Documents ] && \
+       [ -d ~/Music ] && \
+	   [ -d ~/Videos ] ; then
+		rmdir ~/Documents/ ~/Pictures/ ~/Music/ ~/Videos/
+		echo "        DONE"
+    else
+      echo "        four directories to remove not found - skipping"
+    fi
+
+
+
+########################################################
+#  set below for server only
+########################################################
 #
 # if on computer 'coremoons' set up differently as is our local server:
 #
@@ -198,6 +208,10 @@ else
 fi
 
 
+########################################################
+#   Pull in GitHub repos locally
+########################################################
+
 echo "Cloning Sybil data to ~/Sybil..."
 if [ ! -d ~/Sybil ] ; then
         echo "       Enter your passphrase to see your GitHub key..."
@@ -209,14 +223,10 @@ else
 	echo "        ~/Sybil already exists - skipping"
 fi
 
-echo "Creating ~/.unison..."
-if [ ! -d ~/.unison ] && \
-   [ ! -L ~/.unison ] ; then
-	mkdir ~/.unison
-	echo "        DONE"
-else
-	echo "        ~/.unison already exists - skipping"
-fi
+
+########################################################
+#   Link files and diretories to $HOME
+########################################################
 
 echo ""
 echo "LINKING & CREATING FILES"
@@ -381,26 +391,26 @@ fi
 # Add support for Sublime Text 2 editor
 ########################################################
 
-echo "Setup config files for: Sublime Text 2"
+echo "Setup config files for: Sublime Text 3"
 
-if [ -x /opt/SublimeText2/sublime_text ]  ; then
-    if [ -f ~/GenIsys-Fedora/configs/Desktop-Apps/SublimeText2.desktop ] && \
-        [ ! -f ~/.local/share/applications/SublimeText2.desktop ] ; then
-        cp ~/GenIsys-Fedora/configs/Desktop-Apps/SublimeText2.desktop ~/.local/share/applications/ 
-        echo "      Added 'SublimeText2.desktop' config file for Sublime Text 2"
+if [ -x /opt/sublime_text/sublime_text ]  ; then
+    if [ -f ~/GenIsys-Fedora/configs/Desktop-Apps/SublimeText3.desktop ] && \
+        [ ! -f ~/.local/share/applications/SublimeText3.desktop ] ; then
+        cp ~/GenIsys-Fedora/configs/Desktop-Apps/SublimeText3.desktop ~/.local/share/applications/ 
+        echo "      Added 'SublimeText3.desktop' config file for Sublime Text 3"
     else
-        echo "      '~/.local/share/applications/SublimeText2.desktop'  already exists - skipping"
+        echo "      '~/.local/share/applications/SublimeText3.desktop'  already exists - skipping"
     fi
 
-    if [ -x /opt/SublimeText2/sublime_text ] && \
+    if [ -x /opt/sublime_text/sublime_text ] && \
        [ ! -L /usr/local/bin/sublime ] ; then
-        sudo ln -s /opt/SublimeText2/sublime_text /usr/local/bin/sublime
-        echo "      Added Sublime Text 2 to system PATH location as symbolic link"
+        sudo ln -s /opt/sublime_text/sublime_text /usr/local/bin/sublime
+        echo "      Added Sublime Text 3 to system PATH location as symbolic link"
     else
-        echo "      Sublime Text 2 already in system PATH - skipping"
+        echo "      Sublime Text 3 already in system PATH - skipping"
     fi
 else
-    echo "        Sublime Text 2 not installed - skipping"
+    echo "        Sublime Text 3 not installed - skipping"
 fi
 
 ########################################################

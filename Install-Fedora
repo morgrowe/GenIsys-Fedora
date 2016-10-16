@@ -2,24 +2,26 @@
 #
 # Script to install the packages used on Fedora 24
 #   created on 10 Sep 2016 - simon@wiremoons.com based on Ubuntu 16.04 setup script
+#	see Git log for additional updates and changes
 #
 #
+# location of configuration and setup files - obtained from Git repo
+GENIFILES='/home/simon/GenIsys-Fedora'
 #
 printf "\n"
 printf "\n\t\tFedora 24 - package installer\n"
 printf "\n"
 printf "Running with following details\n\n"
-printf "\tScript: '%s'\n\tHostname:'%s'\n\tOS: '%s'\n\tUser '%s'\n\n" \
-            "$0" "$HOSTNAME" "$(uname)" "$(whoami)"
+printf "\tScript: '%s'\n\tGenIsys Files Location:'%s'\n\tHostname:'%s'\n\tOS: '%s'\n\tUser '%s'\n\n" \
+            "$0" "$GENIFILES" "$HOSTNAME" "$(uname)" "$(whoami)"
 printf "\nThis installation script should be run after completing a 'server' or 'desktop' install of Fedora 24.\n"
-printf "\nEnter your root password when prompted so the packages can be install for you\n"
+printf "\nEnter your password when prompted, so 'sudo' can be used to install packages and setup the computer for you\n\n"
 sleep 2
 #
 # set the hostname for the computer
 printf "\nQUESTION:\n"
 read -p "Enter the hostname for your computer : " -t 30 -re REPLY
-if [[ $REPLY != "" ]] && \
-	   [[ $REPLY != $(hostname) ]]; then
+if [[ $REPLY != "" ]] && [[ $REPLY != $(hostname) ]] ; then
     sudo hostnamectl set-hostname "$REPLY"
     printf "\n\tComputer hostname now set to: '$(hostname)' - DONE\n"
 else
@@ -31,8 +33,6 @@ sleep 2
 # ensure the packages lists is up to date
 sudo dnf -y update
 #
-# now ensure the keys and package lists are up to date for above RPM Fusion
-sudo dnf -y update
 # install Fedora base packages we need
 sudo dnf -y install p7zip p7zip-plugins rlwrap ncdu fuse-sshfs clamav fail2ban \
 kernel-devel kernel-headers gcc dkms acpid aspell aspell-en emacs-nox screen
@@ -41,16 +41,33 @@ kernel-devel kernel-headers gcc dkms acpid aspell aspell-en emacs-nox screen
 #sudo freshclam
 #
 #
+# Install RPM Fusion repos for additonal packages - if required by user...
+printf "\nQUESTION:\n"
+read -p "Do you want to install 'RPM Fusion repos' to obtain full range of Linux software?  y/n " -t 30 -re REPLY
+if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+	# check if the 4 x repos exists (ie free + free updates + non-free + non-free updates)
+	if [ $(dnf repolist | grep -ic "rpmfusion") -lt 4 ] ; then
+		# add RPM Fusion Software Repos for 'free' and 'non-free' - check with 'dnf repolist' or 'dnf repolist all'
+		printf "Adding 'free' and 'non-free' RPM Fusion repos...\n"
+		sudo dnf -y install http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+		sudo dnf -y install http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+		# now ensure the keys and package lists are up to date for above new RPM Fusion
+		sudo dnf -y update
+		printf "\nDONE\n"
+	else
+		printf "RPM Fussion repos already added to computer!\n"
+	fi
+else
+    printf "\nAdditional RPM Fusion repos NOT installed at user's request\n"
+fi
+sleep 2
+#
+#
 # Install additional 'desktop' packages also if required by user...
 printf "\nQUESTION:\n"
 read -p "Do you want to install additional 'desktop' type packages?  y/n " -t 30 -re REPLY
 if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 	#
-	# add RPM Fusion Software Repos for 'free' and 'non-free' - check with 'dnf repolist' or 'dnf repolist all'
-	printf "Adding 'free' and 'non-free' RPM Fusion repos...\n"
-	sudo dnf -y install http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-	sudo dnf -y install http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-	printf "\nDONE\n"
 	printf "Adding additonal desktop software..."
     sudo dnf -y install vlc rdesktop gimp gnome-tweak-tool simple-scan
     printf "\nDONE\n"
@@ -60,18 +77,64 @@ fi
 sleep 2
 #
 #
-# Install ZFS on Linux repo and ZFS support packages also if required by user...
-printf "\nQUESTION:\n"
-read -p "Do you want to install 'ZFS' repo and support packages?  y/n " -t 30 -re REPLY
-if [ $REPLY == y ] || [ $REPLY == Y ] ; then
-	sudo dnf install http://download.zfsonlinux.org/fedora/zfs-release$(rpm -E %dist).noarch.rpm
-	sudo gpg --quiet --with-fingerprint /etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux
-	sudo dnf -y install kernel-devel zfs
-    printf "DONE\n"
-else
-    printf "\nAdditional ZFS packages NOT installed at user's request\n"
+# If running on the server - do some extra setup as needed...
+if [ $HOSTNAME == coremoons ] ; then
+	# Install dhcpd if not running on the server
+	if [ $(systemctl is-active dhcpd.service) == "inactive" ] ; then
+		printf "\nQUESTION:\n"
+		read -p "SERVER ONLY: Do you want to install 'dhcpd' and start the server packages?  y/n " -t 30 -re REPLY
+		if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+			printf "Setting up 'dhcpd server'...\n"
+			sudo dnf install  dhcpd-server
+			if [ -f /etc/dhcp/dhcpd.conf ] ; then
+				printf "Adding GenIsys config file...\n"
+				sudo cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf-$(date -d "today" +"%Y-%m-%d_%H.%M")
+				sudo cp $GENIFILES/configs/dhcpd.conf /etc/dhcp/dhcpd.conf
+				sudo systemctl enable dhcpd.service
+				sudo systemctl start dhcpd.service
+				sudo systemctl status dhcpd.service
+			    printf "dhcpd server displayed above OK??\n"
+			    printf "\nDONE\n"
+			fi
+		else
+		    printf "\nAdditional dhcpd packages NOT installed at user's request\n"
+		fi
+		sleep 2
+	fi
+	#
+	# add additional packages only used on server
+	sudo dnf install pygpgme dropbox nautilus-dropbox
+	printf "\nDONE\n"
+	#
+	# add firewall exception files for firewalld
+	# TODO: fix below as checking does not work as only root can access these files...
+	printf "Adding 'firewalld' service exception files - if needed...\n"
+	if [ ! -f /etc/firewalld/services/Syncthing.xml ] ; then
+		sudo cp $GENIFILES/configs/Syncthing.xml /etc/firewalld/services/Syncthing.xml
+		printf "Added 'firewalld' service exception file for:  Syncthing\n"
+	fi
+	if [ ! -f /etc/firewalld/services/PlexMediaServer.xml ] ; then
+		sudo cp $GENIFILES/configs/PlexMediaServer.xml /etc/firewalld/services/PlexMediaServer.xml
+		printf "Added 'firewalld' service exception file for:  PlexMediaServer\n"
+	fi
+	printf "\nDONE\n"
+
+# finish server setup block
 fi
-sleep 2
+#
+#
+# Install ZFS on Linux repo and ZFS support packages also if required by user...
+#printf "\nQUESTION:\n"
+#read -p "Do you want to install 'ZFS' repo and support packages?  y/n " -t 30 -re REPLY
+#if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+#	sudo dnf install http://download.zfsonlinux.org/fedora/zfs-release$(rpm -E %dist).noarch.rpm
+#	sudo gpg --quiet --with-fingerprint /etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux
+#	sudo dnf -y install kernel-devel zfs
+#    printf "\nDONE\n"
+#else
+#    printf "\nAdditional ZFS packages NOT installed at user's request\n"
+#fi
+#sleep 2
 #
 #
 # Install Nvidia graphics card driver if required by the user
@@ -121,7 +184,7 @@ if [ $REPLY == y ] || [ $REPLY == Y ] ; then
     printf "Checking for UTF-8 supprt in terminal...  "
     echo -e '\n        \xe2\x82\xac\n'
     printf "Euro symbol displayed above OK??\n"
-    printf "DONE\n"
+    printf "\nDONE\n"
 else
     printf "\nLocale setup not run at user's request\n"
 fi
@@ -136,7 +199,7 @@ if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 	sudo systemd-tmpfiles --create --prefix /var/log/journal
 	sudo systemctl restart systemd-journald
 	sudo gpasswd -a simon systemd-journal
-    printf "DONE\n"
+    printf "\nDONE\n"
 else
     printf "\nJournald setup not run at user's request\n"
 fi
@@ -155,28 +218,30 @@ if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 		sudo printf "\n%s\n" "vm.swappiness = 1" | sudo tee -a /etc/sysctl.d/99-sysctl.conf
 	fi
 	sudo sysctl -w vm.swappiness=1
-    printf "DONE\n"
+    printf "\nDONE\n"
 else
     printf "\nSwappiness setup not run at user's request\n"
 fi
 sleep 2
 #
 #
-# start now and enable on boot Openssh server
-printf "\nQUESTION:\n"
-read -p "Do you want to enable and start Openssh server?  y/n " -t 30 -re REPLY
-if [ $REPLY == y ] || [ $REPLY == Y ] ; then
-    printf "\nOPENSSH SERVER SETUP\n"
-    sudo systemctl enable sshd.service
-    sudo systemctl start sshd.service
-    printf "Checking Openssh server status...  "
-    sudo systemctl status sshd.service
-    printf "Openssh server displayed above OK??\n"
-    printf "DONE\n"
-else
-    printf "\nOpenssh Server setup not run at user's request\n"
+# start now and enable on boot Openssh server if not running...
+if [ $(systemctl is-active sshd.service) == "inactive" ] ; then
+	printf "\nQUESTION:\n"
+	read -p "Do you want to enable and start Openssh server?  y/n " -t 30 -re REPLY
+	if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+	    printf "\nOPENSSH SERVER SETUP\n"
+	    sudo systemctl enable sshd.service
+	    sudo systemctl start sshd.service
+	    printf "Checking Openssh server status...  "
+	    sudo systemctl status sshd.service
+	    printf "Openssh server displayed above OK??\n"
+	    printf "\nDONE\n"
+	else
+	    printf "\nOpenssh Server setup not run at user's request\n"
+	fi
+	sleep 2
 fi
-sleep 2
 #
 #
 # Add in '/etc/hosts' block list
@@ -199,18 +264,30 @@ if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 	else
 		printf "\nERROR: Unable to find: '/usr/bin/curl'\n"
 	fi
-    printf "DONE\n"
+    printf "\nDONE\n"
 else
     printf "\nBlock list setup not run at user's request\n"
 fi
 sleep 2
+
 #
-# check if need to add setting in support of package 'nss_mdns'
-#if [ ! $(grep -ic "files mdns dns" /etc/nsswitch.conf ) -gt 0 ] ; then
-#	printf "file '/etc/nsnswitch has 'mdns' ...    SKIPPING\n"
-#else
-#	printf "\nedit '/etc/nsswitch.conf' --> change 'hosts: files dns'  to  'hosts: files mdns dns'\n"
-#fi
+#
+# Update font cache if needed?
+printf "\nQUESTION:\n"
+read -p "Do you want to update the system font cache ?  y/n " -t 30 -re REPLY
+if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+    printf "\nREFRESH SYSTEM FONT CACHE\n"
+	fc-cache -fv
+    printf "\nDONE\n"
+else
+    printf "\nFont cache refresh not run at user's request\n"
+fi
+sleep 2
+
+#
+# add /etc/issue and /etc/issue.net
+
+
 #
 #
 # update /etc/issue and /etc/issue.net if required
