@@ -4,7 +4,6 @@
 #  Fedora Linux on a computer
 #
 # location of configuration and setup files - obtained from Git repo
-# and put in place by the 'Install-Fedora' script run before this one
 GENIFILES='/home/simon/GenIsys-Fedora'
 #
 #
@@ -392,26 +391,26 @@ fi
 # Add support for Sublime Text 2 editor
 ########################################################
 
-echo "Setup config files for: Sublime Text 2"
+echo "Setup config files for: Sublime Text 3"
 
-if [ -x /opt/SublimeText2/sublime_text ]  ; then
-    if [ -f ~/GenIsys-Fedora/configs/Desktop-Apps/SublimeText2.desktop ] && \
-        [ ! -f ~/.local/share/applications/SublimeText2.desktop ] ; then
-        cp ~/GenIsys-Fedora/configs/Desktop-Apps/SublimeText2.desktop ~/.local/share/applications/ 
-        echo "      Added 'SublimeText2.desktop' config file for Sublime Text 2"
+if [ -x /opt/sublime_text/sublime_text ]  ; then
+    if [ -f ~/GenIsys-Fedora/configs/Desktop-Apps/SublimeText3.desktop ] && \
+        [ ! -f ~/.local/share/applications/SublimeText3.desktop ] ; then
+        cp ~/GenIsys-Fedora/configs/Desktop-Apps/SublimeText3.desktop ~/.local/share/applications/ 
+        echo "      Added 'SublimeText3.desktop' config file for Sublime Text 3"
     else
-        echo "      '~/.local/share/applications/SublimeText2.desktop'  already exists - skipping"
+        echo "      '~/.local/share/applications/SublimeText3.desktop'  already exists - skipping"
     fi
 
-    if [ -x /opt/SublimeText2/sublime_text ] && \
+    if [ -x /opt/sublime_text/sublime_text ] && \
        [ ! -L /usr/local/bin/sublime ] ; then
-        sudo ln -s /opt/SublimeText2/sublime_text /usr/local/bin/sublime
-        echo "      Added Sublime Text 2 to system PATH location as symbolic link"
+        sudo ln -s /opt/sublime_text/sublime_text /usr/local/bin/sublime
+        echo "      Added Sublime Text 3 to system PATH location as symbolic link"
     else
-        echo "      Sublime Text 2 already in system PATH - skipping"
+        echo "      Sublime Text 3 already in system PATH - skipping"
     fi
 else
-    echo "        Sublime Text 2 not installed - skipping"
+    echo "        Sublime Text 3 not installed - skipping"
 fi
 
 ########################################################
