@@ -94,13 +94,29 @@ if [ $HOSTNAME == coremoons ] ; then
 				sudo systemctl start dhcpd.service
 				sudo systemctl status dhcpd.service
 			    printf "dhcpd server displayed above OK??\n"
-			    printf "DONE\n"
+			    printf "\nDONE\n"
 			fi
 		else
 		    printf "\nAdditional dhcpd packages NOT installed at user's request\n"
 		fi
 		sleep 2
 	fi
+	#
+	# add additional packages only used on server
+	sudo dnf install pygpgme dropbox nautilus-dropbox
+	printf "\nDONE\n"
+	#
+	# add firewall exception files for firewalld
+	printf "Adding 'firewalld' service exception files - if needed...\n"
+	if [ ! -f /etc/firewalld/services/Syncthing.xml ] ; then
+		sudo cp $GENIFILES/configs/Syncthing.xml /etc/firewalld/services/Syncthing.xml
+		printf "Added 'firewalld' service exception file for:  Syncthing\n"
+	fi
+	if [ ! -f /etc/firewalld/services/PlexMediaServer.xml ] ; then
+		sudo cp $GENIFILES/configs/PlexMediaServer.xml /etc/firewalld/services/PlexMediaServer.xml
+		printf "Added 'firewalld' service exception file for:  PlexMediaServer\n"
+	fi
+	printf "\nDONE\n"
 
 # finish server setup block
 fi
@@ -113,7 +129,7 @@ fi
 #	sudo dnf install http://download.zfsonlinux.org/fedora/zfs-release$(rpm -E %dist).noarch.rpm
 #	sudo gpg --quiet --with-fingerprint /etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux
 #	sudo dnf -y install kernel-devel zfs
-#    printf "DONE\n"
+#    printf "\nDONE\n"
 #else
 #    printf "\nAdditional ZFS packages NOT installed at user's request\n"
 #fi
@@ -167,7 +183,7 @@ if [ $REPLY == y ] || [ $REPLY == Y ] ; then
     printf "Checking for UTF-8 supprt in terminal...  "
     echo -e '\n        \xe2\x82\xac\n'
     printf "Euro symbol displayed above OK??\n"
-    printf "DONE\n"
+    printf "\nDONE\n"
 else
     printf "\nLocale setup not run at user's request\n"
 fi
@@ -182,7 +198,7 @@ if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 	sudo systemd-tmpfiles --create --prefix /var/log/journal
 	sudo systemctl restart systemd-journald
 	sudo gpasswd -a simon systemd-journal
-    printf "DONE\n"
+    printf "\nDONE\n"
 else
     printf "\nJournald setup not run at user's request\n"
 fi
@@ -201,7 +217,7 @@ if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 		sudo printf "\n%s\n" "vm.swappiness = 1" | sudo tee -a /etc/sysctl.d/99-sysctl.conf
 	fi
 	sudo sysctl -w vm.swappiness=1
-    printf "DONE\n"
+    printf "\nDONE\n"
 else
     printf "\nSwappiness setup not run at user's request\n"
 fi
@@ -219,7 +235,7 @@ if [ $(systemctl is-active sshd.service) == "inactive" ] ; then
 	    printf "Checking Openssh server status...  "
 	    sudo systemctl status sshd.service
 	    printf "Openssh server displayed above OK??\n"
-	    printf "DONE\n"
+	    printf "\nDONE\n"
 	else
 	    printf "\nOpenssh Server setup not run at user's request\n"
 	fi
@@ -247,7 +263,7 @@ if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 	else
 		printf "\nERROR: Unable to find: '/usr/bin/curl'\n"
 	fi
-    printf "DONE\n"
+    printf "\nDONE\n"
 else
     printf "\nBlock list setup not run at user's request\n"
 fi
@@ -268,12 +284,9 @@ fi
 sleep 2
 
 #
-# check if need to add setting in support of package 'nss_mdns'
-#if [ ! $(grep -ic "files mdns dns" /etc/nsswitch.conf ) -gt 0 ] ; then
-#	printf "file '/etc/nsnswitch has 'mdns' ...    SKIPPING\n"
-#else
-#	printf "\nedit '/etc/nsswitch.conf' --> change 'hosts: files dns'  to  'hosts: files mdns dns'\n"
-#fi
+# add /etc/issue and /etc/issue.net
+
+
 #
 #
 # update /etc/issue and /etc/issue.net if required
