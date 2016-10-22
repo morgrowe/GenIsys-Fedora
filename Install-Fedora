@@ -123,47 +123,20 @@ if [ $HOSTNAME == coremoons ] ; then
 fi
 #
 #
-# Install ZFS on Linux repo and ZFS support packages also if required by user...
-#printf "\nQUESTION:\n"
-#read -p "Do you want to install 'ZFS' repo and support packages?  y/n " -t 30 -re REPLY
-#if [ $REPLY == y ] || [ $REPLY == Y ] ; then
-#	sudo dnf install http://download.zfsonlinux.org/fedora/zfs-release$(rpm -E %dist).noarch.rpm
-#	sudo gpg --quiet --with-fingerprint /etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux
-#	sudo dnf -y install kernel-devel zfs
-#    printf "\nDONE\n"
-#else
-#    printf "\nAdditional ZFS packages NOT installed at user's request\n"
-#fi
-#sleep 2
-#
-#
 # Install Nvidia graphics card driver if required by the user
 #    remove with:  dnf remove xorg-x11-drv-nvidia\*
-#printf "\nQUESTION:\n"
-#read -p "Install nVidia graphics card drivers?  y/n " -t 30 -re REPLY
-#if [ $REPLY == y ] || [ $REPLY == Y ] ; then
-    #printf "\nDRIVER INSTALL - nVidia\n"
-    #sudo dnf -y update
-	#sudo dnf install kernel-devel kernel-headers gcc dkms acpid
-	#sudo echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf
-	# Edit /etc/sysconfig/grub append  rd.driver.blacklist=nouveau
-	# grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg
-	# dnf remove xorg-x11-drv-nouveau
-	# mv /boot/initramfs-$(uname -r).img /boot/initramfs-$(uname -r)-nouveau.img
-	# dracut /boot/initramfs-$(uname -r).img $(uname -r)
-	# systemctl set-default multi-user.target
-	# reboot
-	# run install script as root
-	# systemctl set-default graphical.target
-	# reboot
-    # dnf install vdpauinfo libva-vdpau-driver libva-utils
-    # sudo dnf -y autoremove
-	# 
-    #printf "\n    nVidia Driver Install - restart to enable!\n"
-#else
-#    printf "\nnVidia Driver packages NOT installed at user's request\n"
-#fi
-#sleep 2
+printf "\nQUESTION:\n"
+read -p "Install nVidia graphics card drivers - using RPM Fusion?  y/n " -t 30 -re REPLY
+if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+	printf "\nDRIVER INSTALL - nVidia\n"
+	dnf install xorg-x11-drv-nvidia akmod-nvidia "kernel-devel-uname-r == $(uname -r)" \
+	xorg-x11-drv-nvidia xorg-x11-drv-nvidia-cuda vdpauinfo libva-vdpau-driver libva-utils
+	dnf update -y
+   printf "\n    nVidia Driver Install - restart to enable!\n"
+else
+    printf "\nnVidia Driver packages NOT installed at user's request\n"
+fi
+sleep 2
 #
 #
 # clean up any packages still left over that need to be cleaned out
