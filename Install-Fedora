@@ -129,14 +129,17 @@ printf "\nQUESTION:\n"
 read -p "Install nVidia graphics card drivers - using RPM Fusion?  y/n " -t 30 -re REPLY
 if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 	printf "\nDRIVER INSTALL - nVidia\n"
-	dnf install xorg-x11-drv-nvidia akmod-nvidia "kernel-devel-uname-r == $(uname -r)" \
-	xorg-x11-drv-nvidia xorg-x11-drv-nvidia-cuda vdpauinfo libva-vdpau-driver libva-utils
-	dnf update -y
-   printf "\n    nVidia Driver Install - restart to enable!\n"
+	sudo dnf install xorg-x11-drv-nvidia akmod-nvidia "kernel-devel-uname-r == $(uname -r)" \
+		 xorg-x11-drv-nvidia xorg-x11-drv-nvidia-cuda vdpauinfo libva-vdpau-driver libva-utils
+	sudo dnf update -y
+	printf "\n    nVidia Driver Install - ** restart computer to enable! **\n\n"
+	printf "      NOTE: You may need to reboot twice as kernel kmods are built first boot\n"
+	printf "            - which may not work until second boot. Use: 'Ctrl + Alt + F3' to \n"
+	printf "           access a virtual console, login and reboot.\n\n"
 else
     printf "\nnVidia Driver packages NOT installed at user's request\n"
 fi
-sleep 2
+sleep 3
 #
 #
 # clean up any packages still left over that need to be cleaned out
