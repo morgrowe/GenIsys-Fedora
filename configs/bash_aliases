@@ -50,7 +50,8 @@ alias dirsum='du -sh *'
 alias gitstat='git fetch && git status'
 alias tagsgen='ctags -R --exclude=".git" && cscope -Rb'
 alias make='make -B'
-alias sync2server='rsync -PhaWLe ssh simon@coremoons.local:/datastore/ /datastore/ --exclude ".Trash-1000/" --exclude "lost+found/"'
+alias sync2server='rsync -PhaWL --stats --delete -e ssh simon@coremoons.local:/datastore/ /datastore/'
+#alias sync2server='rsync -PhaWLe ssh simon@coremoons.local:/datastore/ /datastore/ --exclude ".Trash-1000/" --exclude "lost+found/"'
 #alias f2brep='awk '($(NF-1) = /Ban/){print $NF}' /var/log/fail2ban.log | sort | uniq -c | sort -n'
 #
 # run X-Windows apps from server on our local system - remote gui apps
