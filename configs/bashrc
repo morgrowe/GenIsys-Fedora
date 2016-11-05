@@ -291,7 +291,7 @@ fi
 if [ ! -n "$STY" ] && [ -x /usr/bin/screen ] ; then
    read -p "Do you want to run GNU screen  y/n " -t 3 -re REPLY
    if [[ $REPLY == y ]] || [[ $REPLY == Y ]] ; then
-   	  /usr/bin/screen -D -RR
+   	  /usr/bin/screen -RR
    else
 	  printf "\nGNU screen not being used at users request...\n"
    fi
