@@ -388,7 +388,7 @@ fi
 
 
 ########################################################
-# Add support for Sublime Text 2 editor
+# Add support for Sublime Text editor
 ########################################################
 
 echo "Setup config files for: Sublime Text 3"
