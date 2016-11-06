@@ -218,6 +218,41 @@ if [ $(systemctl is-active sshd.service) == "inactive" ] ; then
 	fi
 	sleep 2
 fi
+
+#
+#
+# Add 'Sublime text 3' editor to the computer
+printf "\nQUESTION:\n"
+read -p "Do you want to install 'SublimeText 3' ?  y/n " -t 30 -re REPLY
+if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+    printf "\nSUBLIMETEXT SETUP\n"
+	# create a place to put the downloaded file if needed
+	if [ ! -d $HOME/scratch ] ; then
+		printf "Creating directory ~/scratch...\n"
+		mkdir $HOME/scratch
+	fi
+	# check it is not already installed...
+	printf "Checking foir existing installation in '/opt/sublime_text/'...\n"
+	if [ ! -d /opt/sublime_text ] ; then
+		printf "Downloading 'SublimeText' file from  'www.sublimetext.com'...\n"
+		if [ -x /usr/bin/curl ] ; then
+			curl https://download.sublimetext.com/sublime_text_3_build_3126_x64.tar.bz2 -o $HOME/scratch/sublimetext3.tar.bz2
+			printf "Installing SublimeText to '/opt/sublime_text/' directory...\n"
+			cd $HOME/scratch/
+			tar -xjf ./sublimetext3.tar.bz2
+			sudo mv $HOME/scratch/sublime_text_3 /opt/sublime_text
+		else
+			printf "\nERROR: Unable to find: '/usr/bin/curl'\n"
+		fi
+	else
+		printf "SublimeText already installed!\n"
+	fi
+    printf "\nDONE\n"
+else
+    printf "\nSublimeText setup not run at user's request\n"
+fi
+sleep 2
+
 #
 #
 # Add in '/etc/hosts' block list
@@ -245,7 +280,6 @@ else
     printf "\nBlock list setup not run at user's request\n"
 fi
 sleep 2
-
 #
 #
 # Update font cache if needed?
