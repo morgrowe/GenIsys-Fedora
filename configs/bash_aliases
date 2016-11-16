@@ -16,6 +16,7 @@ alias vcheck='clamscan -r -i --bell .'
 alias dthumbs='find . -type f -name "Thumbs.db" -print -exec rm -rf {} \;'
 alias dmac='find . -type f -name ".DS_Store" -print -exec rm -rf {} \;'
 alias gitchk='for d in `find ~ -name ".git"`; do cd $d/..; echo `pwd`:; git status; echo; done'
+alias chkssh='sudo journalctl -u sshd|grep -e Accepted'
 #
 # jump to directory locations
 alias gdbs='cd ~/Work/Revenue-Assurance/LIJ-Project/Databases/'
@@ -26,7 +27,7 @@ alias ggo='cd ~/SyncData/Code-Store/go-code/src/github.com/wiremoons'
 alias gtd='cd ${TOOLDIR}'
 alias gweb='cd ~/SyncData/Code-Store/WebSites'
 #
-# run scripts in MoonStore
+# run scripts in SyncData
 alias ds='${TOOLDIR}/doc-search'
 alias tcl='/usr/bin/rlwrap ${TOOLDIR}/tclsh'
 alias conwin='${TOOLDIR}/con-win'
