@@ -69,7 +69,8 @@ read -p "Do you want to install additional 'desktop' type packages?  y/n " -t 30
 if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 	#
 	printf "Adding additonal desktop software..."
-    sudo dnf -y install vlc rdesktop gimp gnome-tweak-tool simple-scan
+    sudo dnf -y install vlc rdesktop gimp gnome-tweak-tool simple-scan mozilla-fira-mono-fonts \
+		 mozilla-fira-mono-fonts
     printf "\nDONE\n"
 else
     printf "\nAdditional packages NOT installed at user's request\n"
