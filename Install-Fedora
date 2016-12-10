@@ -35,7 +35,8 @@ sudo dnf -y update
 #
 # install Fedora base packages we need
 sudo dnf -y install p7zip p7zip-plugins rlwrap ncdu fuse-sshfs clamav fail2ban \
-kernel-devel kernel-headers gcc dkms acpid aspell aspell-en emacs-nox screen
+	 kernel-devel kernel-headers gcc dkms acpid aspell aspell-en emacs-nox screen \
+	 ctags cscope
 #
 # install antivirus
 #sudo freshclam
