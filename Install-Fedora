@@ -84,6 +84,7 @@ read -p "Do you want to install additional 'development' type packages?  y/n " -
 if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 	#
 	printf "Adding additonal development software..."
+	sudo dnf -y debuginfo-install glibc
     sudo dnf -y install readline-devel ctags cscope
     printf "\nDONE\n"
 else
