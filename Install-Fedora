@@ -35,8 +35,7 @@ sudo dnf -y update
 #
 # install Fedora base packages we need
 sudo dnf -y install p7zip p7zip-plugins rlwrap ncdu fuse-sshfs clamav fail2ban \
-	 kernel-devel kernel-headers gcc dkms acpid aspell aspell-en emacs-nox screen \
-	 ctags cscope
+	 kernel-devel kernel-headers gcc dkms acpid aspell aspell-en emacs-nox screen
 #
 # install antivirus
 #sudo freshclam
@@ -72,6 +71,21 @@ if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 	printf "Adding additonal desktop software..."
     sudo dnf -y install vlc rdesktop gimp gnome-tweak-tool simple-scan mozilla-fira-mono-fonts \
 		 mozilla-fira-mono-fonts
+    printf "\nDONE\n"
+else
+    printf "\nAdditional packages NOT installed at user's request\n"
+fi
+sleep 2
+#
+#
+# Install additional 'development' packages also if required by user...
+printf "\nQUESTION:\n"
+read -p "Do you want to install additional 'development' type packages?  y/n " -t 30 -re REPLY
+if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+	#
+	printf "Adding additonal development software..."
+	sudo dnf -y debuginfo-install glibc
+    sudo dnf -y install readline-devel ctags cscope
     printf "\nDONE\n"
 else
     printf "\nAdditional packages NOT installed at user's request\n"
