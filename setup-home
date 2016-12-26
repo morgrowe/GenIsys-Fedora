@@ -62,14 +62,14 @@ if [ $HOSTNAME != coremoons ] ; then
         mkdir $HOME/SyncData/Software-Repo
         printf "        Created: '$HOME/SyncData/Software-Repo'\n"
     fi
-    if [ ! -d $HOME/SyncData/Dropbox ] ; then 
-        mkdir $HOME/SyncData/Dropbox
-        printf "        Created: '$HOME/SyncData/Dropbox'\n"
-    fi
-    if [ ! -d $HOME/SyncData/Gobin ] ; then 
-        mkdir $HOME/SyncData/Gobin
-        printf "        Created: '$HOME/SyncData/Gobin'\n"
-    fi
+    #if [ ! -d $HOME/SyncData/Dropbox ] ; then 
+    #    mkdir $HOME/SyncData/Dropbox
+    #    printf "        Created: '$HOME/SyncData/Dropbox'\n"
+    #fi
+    #if [ ! -d $HOME/SyncData/Gobin ] ; then 
+    #    mkdir $HOME/SyncData/Gobin
+    #    printf "        Created: '$HOME/SyncData/Gobin'\n"
+    #fi
     if [ ! -d $HOME/SyncData/Work ] ; then 
         mkdir $HOME/SyncData/Work
         printf "        Created: '$HOME/SyncData/Work'\n"
@@ -79,8 +79,9 @@ if [ $HOSTNAME != coremoons ] ; then
         printf "        Created: '$HOME/SyncData/StatusOnly'\n"
     fi    
     printf "Location '$HOME/SyncData' structure check complete\n"
+	sleep 1
     #
-    # setup symbolic links to SyncData
+    # setup symbolic links to SyncData folders
     printf "linking '~/Downloads' to '$HOME/SyncData/Software-Repo'...\n"
     if [ -d $HOME/SyncData/Software-Repo ] && \
        [ ! -L $HOME/Downloads ] && \
@@ -102,7 +103,8 @@ if [ $HOSTNAME != coremoons ] ; then
     else
       echo "        Link ~/Work already exists - skipping"
     fi
-
+	#
+	# delete stock folders that are not needed...
     echo "Removing unwanted $HOME directories:  ~/Pictures ~/Music ~/Document ~/Videos ..."
     if [ -d ~/Pictures ] && \
        [ -d ~/Documents ] && \
@@ -113,9 +115,6 @@ if [ $HOSTNAME != coremoons ] ; then
     else
       echo "        four directories to remove not found - skipping"
     fi
-
-
-
 ########################################################
 #  set below for server only
 ########################################################
@@ -164,10 +163,10 @@ elif [ $HOSTNAME == coremoons ] ; then
         ln -s /datastore/SyncData/StatusOnly $HOME/SyncData/StatusOnly
         printf "        Created: '$HOME/SyncData/StatusOnly'\n"
     fi
-    if [ ! -d $HOME/SyncData/Gobin ] ; then 
-        ln -s /datastore/SyncData/Gobin $HOME/SyncData/Gobin
-        printf "        Created: '$HOME/SyncData/Gobin'\n"
-    fi
+    #if [ ! -d $HOME/SyncData/Gobin ] ; then 
+    #    ln -s /datastore/SyncData/Gobin $HOME/SyncData/Gobin
+    #    printf "        Created: '$HOME/SyncData/Gobin'\n"
+    #fi
     printf "Location '$HOME/SyncData' structure check complete\n"
     #
     # setup symbolic links to SyncData or Datastore
@@ -202,7 +201,18 @@ elif [ $HOSTNAME == coremoons ] ; then
     else
       echo "        Link ~/Work already exists - skipping"
     fi
-# not coremoons or some other computer - must be an error...
+	# remove stock home directory folders as not needed...
+    echo "Removing unwanted $HOME directories:  ~/Pictures ~/Music ~/Document ~/Videos ..."
+    if [ -d ~/Pictures ] && \
+       [ -d ~/Documents ] && \
+       [ -d ~/Music ] && \
+	   [ -d ~/Videos ] ; then
+		rmdir ~/Documents/ ~/Pictures/ ~/Music/ ~/Videos/
+		echo "        DONE"
+    else
+      echo "        four directories to remove not found - skipping"
+    fi
+# so  coremoons or some other computer - must be an error...
 else
   echo "        WARNING: unable to identify your computer - skipping directory setup"
 fi
