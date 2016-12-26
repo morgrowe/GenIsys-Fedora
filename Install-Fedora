@@ -35,7 +35,8 @@ sudo dnf -y update
 #
 # install Fedora base packages we need
 sudo dnf -y install p7zip p7zip-plugins rlwrap ncdu fuse-sshfs clamav fail2ban \
-	 kernel-devel kernel-headers gcc dkms acpid aspell aspell-en emacs-nox screen
+	 kernel-devel kernel-headers gcc dkms acpid aspell aspell-en emacs-nox screen \
+	 splix system-config-printer
 #
 # install antivirus
 #sudo freshclam
@@ -101,7 +102,7 @@ if [ $HOSTNAME == coremoons ] ; then
 		read -p "SERVER ONLY: Do you want to install 'dhcpd' and start the server packages?  y/n " -t 30 -re REPLY
 		if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 			printf "Setting up 'dhcpd server'...\n"
-			sudo dnf install  dhcpd-server
+			sudo dnf install dhcp-server
 			if [ -f /etc/dhcp/dhcpd.conf ] ; then
 				printf "Adding GenIsys config file...\n"
 				sudo cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf-$(date -d "today" +"%Y-%m-%d_%H.%M")
