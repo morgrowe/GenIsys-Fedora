@@ -86,7 +86,7 @@ if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 	#
 	printf "Adding additonal development software..."
 	sudo dnf -y debuginfo-install glibc
-    sudo dnf -y install readline-devel ctags cscope
+    sudo dnf -y install readline-devel ctags cscope strace valgrind cgdb gdb
     printf "\nDONE\n"
 else
     printf "\nAdditional packages NOT installed at user's request\n"
@@ -103,9 +103,12 @@ if [ $HOSTNAME == coremoons ] ; then
 		if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 			printf "Setting up 'dhcpd server'...\n"
 			sudo dnf install dhcp-server
-			if [ -f /etc/dhcp/dhcpd.conf ] ; then
+			if [ -f $GENIFILES/configs/dhcpd.conf ] ; then
 				printf "Adding GenIsys config file...\n"
-				sudo cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf-$(date -d "today" +"%Y-%m-%d_%H.%M")
+				# backup any existing dhcpd.conf file first
+				if [ -f /etc/dhcp/dhcpd.conf ] ; then
+					sudo cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf-$(date -d "today" +"%Y-%m-%d_%H.%M")
+				fi
 				sudo cp $GENIFILES/configs/dhcpd.conf /etc/dhcp/dhcpd.conf
 				sudo systemctl enable dhcpd.service
 				sudo systemctl start dhcpd.service
