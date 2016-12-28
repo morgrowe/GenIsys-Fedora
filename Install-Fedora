@@ -86,7 +86,8 @@ if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 	#
 	printf "Adding additonal development software..."
 	sudo dnf -y debuginfo-install glibc
-    sudo dnf -y install readline-devel ctags cscope strace valgrind cgdb gdb
+    sudo dnf -y install readline-devel ctags cscope strace valgrind cgdb gdb \
+    	rust cargo rust-doc rust-gdb
     printf "\nDONE\n"
 else
     printf "\nAdditional packages NOT installed at user's request\n"
