@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Script to install the packages used on Fedora 24
+# Script to install the packages used on Fedora 24/25
 #   created on 10 Sep 2016 - simon@wiremoons.com based on Ubuntu 16.04 setup script
 #	see Git log for additional updates and changes
 #
@@ -9,7 +9,7 @@
 GENIFILES='/home/simon/GenIsys-Fedora'
 #
 printf "\n"
-printf "\n\t\tFedora 24 - package installer\n"
+printf "\n\t\tFedora 25 - package installer\n"
 printf "\n"
 printf "Running with following details\n\n"
 printf "\tScript: '%s'\n\tGenIsys Files Location:'%s'\n\tHostname:'%s'\n\tOS: '%s'\n\tUser '%s'\n\n" \
@@ -35,7 +35,7 @@ sudo dnf -y update
 #
 # install Fedora base packages we need
 sudo dnf -y install p7zip p7zip-plugins rlwrap ncdu fuse-sshfs clamav fail2ban \
-	 kernel-devel kernel-headers gcc dkms acpid aspell aspell-en emacs-nox screen \
+	 kernel-devel kernel-headers gcc dkms acpid aspell aspell-en screen \
 	 splix system-config-printer
 #
 # install antivirus
@@ -150,12 +150,15 @@ read -p "Install nVidia graphics card drivers - using RPM Fusion?  y/n " -t 30 -
 if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 	printf "\nDRIVER INSTALL - nVidia\n"
 	sudo dnf install xorg-x11-drv-nvidia akmod-nvidia "kernel-devel-uname-r == $(uname -r)" \
-		 xorg-x11-drv-nvidia xorg-x11-drv-nvidia-cuda vdpauinfo libva-vdpau-driver libva-utils
+		 xorg-x11-drv-nvidia xorg-x11-drv-nvidia-cuda vdpauinfo libva-vdpau-driver libva-utils \
+		 xorg-x11-drv-nvidia-libs.i686
 	sudo dnf update -y
 	printf "\n    nVidia Driver Install - ** restart computer to enable! **\n\n"
 	printf "      NOTE: You may need to reboot twice as kernel kmods are built first boot\n"
 	printf "            - which may not work until second boot. Use: 'Ctrl + Alt + F3' to \n"
 	printf "           access a virtual console, login and reboot.\n\n"
+	printf " NOTE: To remove the Nvidia drivers and restore original state run the: 'remove-nvidia'\n"
+	printf " script under the 'assets' folder of this 'GenIsys-Fedora' repo.\n"
 else
     printf "\nnVidia Driver packages NOT installed at user's request\n"
 fi
@@ -327,10 +330,9 @@ sleep 2
 # TODO: change '/etc/ssh/sshd_config' to block root logins & issue banner enable
 #
 # Install and setup complete - update user and finish up
-printf "\nINSTALL COMPLETE"
-printf "\nPlease run:\n\t - sensors-detect\n\t - sudo gpasswd -a simon fuse"
+printf "\nINSTALL COMPLETE\n"
 printf "\nOther packages to consider are:\n\thandbrake / minidlna / mdadm / pm-utils / kernel-wedge"
-printf "\n\tjed / jed-extra / btrfs-tools / nautilus-dropbox \n\n"
+printf "\n\tjed / jed-extra / btrfs-tools / nautilus-dropbox / emacs-nox / vim \n\n"
 printf "You can view all your install packages with the command:  dnf list installed | more\n"
 printf "\nEXIT\n"
 
