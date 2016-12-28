@@ -24,6 +24,7 @@ alias gdev='cd ~/SyncData/Code-Store/'
 alias goc='cd ~/SyncData/Code-Store/c-code/'
 alias glib='cd ~/Sybil/Technical-Info'
 alias ggo='cd ~/SyncData/Code-Store/go-code/src/github.com/wiremoons'
+alias grust='cd ~/SyncData/Code-Store/rust'
 alias gtd='cd ${TOOLDIR}'
 alias gweb='cd ~/SyncData/Code-Store/WebSites'
 #
