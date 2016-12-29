@@ -29,7 +29,7 @@ printf "\nLINKING & CREATING DIRECTORIES\n\n"
 # if not on computer 'coremoons' :
 #
 if [ $HOSTNAME != coremoons ] ; then
-    # Check and create if needed the ~/SyncData directories under $HOME - expect for coremoons
+    # Check and create if needed the ~/SyncData directories under $HOME - except for coremoons
     if [ ! -d $HOME/SyncData ] ; then
         printf "Location '$HOME/SyncData' does not exist creating structure\n"
         mkdir $HOME/SyncData
