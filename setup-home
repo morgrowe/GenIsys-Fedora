@@ -28,7 +28,7 @@ printf "\nLINKING & CREATING DIRECTORIES\n\n"
 #
 # if not on computer 'coremoons' :
 #
-if [ $HOSTNAME != coremoons ] && [ $HOSTNAME != "mrowe-pc-fedora" ]; then
+if [ $HOSTNAME != coremoons ] ; then
     # Check and create if needed the ~/SyncData directories under $HOME - expect for coremoons
     if [ ! -d $HOME/SyncData ] ; then
         printf "Location '$HOME/SyncData' does not exist creating structure\n"
