@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Script to install the packages used on Fedora 24
+# Script to install the packages used on Fedora 24/25
 #   created on 10 Sep 2016 - simon@wiremoons.com based on Ubuntu 16.04 setup script
 #	see Git log for additional updates and changes
 #
@@ -9,7 +9,7 @@
 GENIFILES='/home/simon/GenIsys-Fedora'
 #
 printf "\n"
-printf "\n\t\tFedora 24 - package installer\n"
+printf "\n\t\tFedora 25 - package installer\n"
 printf "\n"
 printf "Running with following details\n\n"
 printf "\tScript: '%s'\n\tGenIsys Files Location:'%s'\n\tHostname:'%s'\n\tOS: '%s'\n\tUser '%s'\n\n" \
@@ -35,7 +35,7 @@ sudo dnf -y update
 #
 # install Fedora base packages we need
 sudo dnf -y install p7zip p7zip-plugins rlwrap ncdu fuse-sshfs clamav fail2ban \
-	 kernel-devel kernel-headers gcc dkms acpid aspell aspell-en emacs-nox screen \
+	 kernel-devel kernel-headers gcc dkms acpid aspell aspell-en screen \
 	 splix system-config-printer
 #
 # install antivirus
@@ -86,7 +86,8 @@ if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 	#
 	printf "Adding additonal development software..."
 	sudo dnf -y debuginfo-install glibc
-    sudo dnf -y install readline-devel ctags cscope
+    sudo dnf -y install readline-devel ctags cscope strace valgrind cgdb gdb \
+    	rust cargo rust-doc rust-gdb
     printf "\nDONE\n"
 else
     printf "\nAdditional packages NOT installed at user's request\n"
@@ -103,9 +104,12 @@ if [ $HOSTNAME == coremoons ] ; then
 		if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 			printf "Setting up 'dhcpd server'...\n"
 			sudo dnf install dhcp-server
-			if [ -f /etc/dhcp/dhcpd.conf ] ; then
+			if [ -f $GENIFILES/configs/dhcpd.conf ] ; then
 				printf "Adding GenIsys config file...\n"
-				sudo cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf-$(date -d "today" +"%Y-%m-%d_%H.%M")
+				# backup any existing dhcpd.conf file first
+				if [ -f /etc/dhcp/dhcpd.conf ] ; then
+					sudo cp /etc/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf-$(date -d "today" +"%Y-%m-%d_%H.%M")
+				fi
 				sudo cp $GENIFILES/configs/dhcpd.conf /etc/dhcp/dhcpd.conf
 				sudo systemctl enable dhcpd.service
 				sudo systemctl start dhcpd.service
@@ -119,7 +123,7 @@ if [ $HOSTNAME == coremoons ] ; then
 		sleep 2
 	fi
 	#
-	# add additional packages only used on server
+	# add Dropbox packages to server - as syncs Dropbox into Syncthing
 	sudo dnf install pygpgme dropbox nautilus-dropbox
 	printf "\nDONE\n"
 	#
@@ -147,12 +151,17 @@ read -p "Install nVidia graphics card drivers - using RPM Fusion?  y/n " -t 30 -
 if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 	printf "\nDRIVER INSTALL - nVidia\n"
 	sudo dnf install xorg-x11-drv-nvidia akmod-nvidia "kernel-devel-uname-r == $(uname -r)" \
-		 xorg-x11-drv-nvidia xorg-x11-drv-nvidia-cuda vdpauinfo libva-vdpau-driver libva-utils
+		 xorg-x11-drv-nvidia xorg-x11-drv-nvidia-cuda vdpauinfo libva-vdpau-driver libva-utils \
+		 xorg-x11-drv-nvidia-libs.i686
 	sudo dnf update -y
+	# added below as may enforce update of drivers prior to reboot..?
+	sudo akmods --force
 	printf "\n    nVidia Driver Install - ** restart computer to enable! **\n\n"
 	printf "      NOTE: You may need to reboot twice as kernel kmods are built first boot\n"
 	printf "            - which may not work until second boot. Use: 'Ctrl + Alt + F3' to \n"
 	printf "           access a virtual console, login and reboot.\n\n"
+	printf " NOTE: To remove the Nvidia drivers and restore original state run the: 'remove-nvidia'\n"
+	printf " script under the 'assets' folder of this 'GenIsys-Fedora' repo.\n"
 else
     printf "\nnVidia Driver packages NOT installed at user's request\n"
 fi
@@ -324,10 +333,12 @@ sleep 2
 # TODO: change '/etc/ssh/sshd_config' to block root logins & issue banner enable
 #
 # Install and setup complete - update user and finish up
-printf "\nINSTALL COMPLETE"
-printf "\nPlease run:\n\t - sensors-detect\n\t - sudo gpasswd -a simon fuse"
-printf "\nOther packages to consider are:\n\thandbrake / minidlna / mdadm / pm-utils / kernel-wedge"
-printf "\n\tjed / jed-extra / btrfs-tools / nautilus-dropbox \n\n"
-printf "You can view all your install packages with the command:  dnf list installed | more\n"
+printf "\nINSTALL COMPLETE\n"
+printf "\nOther packages to consider installing with 'dnf install' are:"
+printf "\n\thandbrake / minidlna / emacs-nox / vim\n"
+printf "\nYou can view all your install packages with the command:  dnf list installed | more\n"
+printf "\nYou can search for packages with the command:  dnf search prog-name-here\n"
+printf "\nYou can get detial info for a package with the command:  dnf info prog-name-here\n"
+printf "\nYou can update Fedora with the command:  sudo dnf update\n"
 printf "\nEXIT\n"
 

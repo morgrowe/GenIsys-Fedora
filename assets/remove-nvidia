@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# Script to remove the Nvidia driver packages from Fedora 
+#
+#
+# check the user wants to do this Nvida driver removal removal!
+printf "\nQUESTION:\n"
+read -p "Do you want to REMOVE all Nvidia driver and restore X related packages?  y/n " -t 30 -re REPLY
+if [ $REPLY == y ] || [ $REPLY == Y ] ; then
+	#
+	printf "Removing Nvidia drivers and resetting packages..."
+	sudo dnf remove xorg-x11-drv-nvidia*
+	sudo rm -f /usr/lib{,64}/libGL.so.* /usr/lib{,64}/libEGL.so.*
+	sudo rm -f /usr/lib{,64}/xorg/modules/extensions/libglx.so
+	sudo dnf re-install xorg-x11-server-Xorg mesa-libGL mesa-libEGL
+	sudo mv /etc/X11/xorg.conf /etc/X11/xorg.conf.saved
+	# ensure the packages are in a clean state
+	sudo dnf autoremove
+	# ensure the packages lists is up to date
+	sudo dnf -y update
+    printf "\nRemoval complete\n"
+else
+    printf "\nAdditional packages NOT removed at user's request\n"
+fi
+printf "\nDONE\n"
