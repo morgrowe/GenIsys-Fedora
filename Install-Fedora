@@ -6,7 +6,7 @@
 #
 #
 # location of configuration and setup files - obtained from Git repo
-GENIFILES='/home/simon/GenIsys-Fedora'
+GENIFILES=$HOME/GenIsys-Fedora
 #
 printf "\n"
 printf "\n\t\tFedora 25 - package installer\n"
@@ -36,7 +36,7 @@ sudo dnf -y update
 # install Fedora base packages we need
 sudo dnf -y install p7zip p7zip-plugins rlwrap ncdu fuse-sshfs clamav fail2ban \
 	 kernel-devel kernel-headers gcc dkms acpid aspell aspell-en screen \
-	 splix system-config-printer
+	 splix system-config-printer nano
 #
 # install antivirus
 #sudo freshclam
