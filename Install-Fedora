@@ -123,7 +123,7 @@ if [ $HOSTNAME == coremoons ] ; then
 		sleep 2
 	fi
 	#
-	# add additional packages only used on server
+	# add Dropbox packages to server - as syncs Dropbox into Syncthing
 	sudo dnf install pygpgme dropbox nautilus-dropbox
 	printf "\nDONE\n"
 	#
@@ -154,6 +154,8 @@ if [ $REPLY == y ] || [ $REPLY == Y ] ; then
 		 xorg-x11-drv-nvidia xorg-x11-drv-nvidia-cuda vdpauinfo libva-vdpau-driver libva-utils \
 		 xorg-x11-drv-nvidia-libs.i686
 	sudo dnf update -y
+	# added below as may enforce update of drivers prior to reboot..?
+	sudo akmods --force
 	printf "\n    nVidia Driver Install - ** restart computer to enable! **\n\n"
 	printf "      NOTE: You may need to reboot twice as kernel kmods are built first boot\n"
 	printf "            - which may not work until second boot. Use: 'Ctrl + Alt + F3' to \n"
@@ -332,8 +334,11 @@ sleep 2
 #
 # Install and setup complete - update user and finish up
 printf "\nINSTALL COMPLETE\n"
-printf "\nOther packages to consider are:\n\thandbrake / minidlna / mdadm / pm-utils / kernel-wedge"
-printf "\n\tjed / jed-extra / btrfs-tools / nautilus-dropbox / emacs-nox / vim \n\n"
-printf "You can view all your install packages with the command:  dnf list installed | more\n"
+printf "\nOther packages to consider installing with 'dnf install' are:"
+printf "\n\thandbrake / minidlna / emacs-nox / vim\n"
+printf "\nYou can view all your install packages with the command:  dnf list installed | more\n"
+printf "\nYou can search for packages with the command:  dnf search prog-name-here\n"
+printf "\nYou can get detial info for a package with the command:  dnf info prog-name-here\n"
+printf "\nYou can update Fedora with the command:  sudo dnf update\n"
 printf "\nEXIT\n"
 
