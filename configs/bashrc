@@ -8,7 +8,7 @@
 #
 # location of configuration and setup files - obtained from Git repo
 # and put in place by the 'Install-Fedora' script run before this one
-GENIFILES='/home/simon/GenIsys-Fedora'
+GENIFILES="$HOME/GenIsys-Fedora"
 
 #####################################################################
 #
@@ -112,7 +112,7 @@ fi
 # set the prompt - with different color for the 'user@host' element of the prompt
 #  if colour prompt - set different one for each host 
 if [ "$color_prompt" = yes ] ; then
-	if [ $HOSTNAME == blumoons ] ; then
+	if [ $HOSTNAME == mrowe-pc-fedora ] ; then
 		# green prompt
 		PS1='${chroot_env:+($chroot_env)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 	fi
