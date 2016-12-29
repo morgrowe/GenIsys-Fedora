@@ -10,3 +10,6 @@ SRC='/datastore/'
 DST='/media/simon/6TB-USB3/'
 
 sudo rsync -PhaWL --delete --stats --exclude "lost+found/" --exclude "System Volume Information/" --exclude "\$RECYCLE.BIN/" --exclude ".Trash-1000/" $SRC $DST
+
+
+sudo rsync -PhaWL --delete --stats --exclude "lost+found/" --exclude "System Volume Information/" --exclude "\$RECYCLE.BIN/" --exclude ".Trash-1000/" /run/media/simon/6GB-Backup /datastore
