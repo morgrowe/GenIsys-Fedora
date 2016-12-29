@@ -4,7 +4,11 @@
 #  Updated 04 Jan 2014 by Simon Rowe - added check for 7z exit code 
 #  Updated 31 Oct 2015 by Simon Rowe - added check for 7z executable
 #  Updated 02 Apr 2016 by Simon Rowe - corrected error when moving new backup file
-#  updtaed 06 Jul 2016 by Simon Rowe - minor spelling corrections
+#  updated 06 Jul 2016 by Simon Rowe - minor spelling corrections
+#  updated 29 Dec 2016 by Simon Rowe - correct computer system name 
+#									   check as was wrong and no longer
+#									  'export' STBKFILE as should only be 
+#									  local to the script
 #
 printf "\n"
 printf "Checking for syncthing config files in ~/.config/syncthing/ ...\n"
@@ -15,23 +19,21 @@ else
     printf "ERROR: unble to find: ~/.config/syncthing\nABORTED\n"
     exit 2
 fi
-printf "Changed to: %s\n" "$(pwd)"
-export STBKFILE=syncthing-$HOSTNAME-backup-$(date -d "today" +"%Y-%m-%d_%H.%M").7z
-printf "\n"
-printf "Checking for 7zip application... "
+printf "Changed directory to: %s\n" "$(pwd)"
+STBKFILE=syncthing-$HOSTNAME-backup-$(date -d "today" +"%Y-%m-%d_%H.%M").7z
+printf "\nChecking for 7zip application...\n"
 if [ ! -x /usr/bin/7z ] ; then
-		printf "ERROR: install 7z on you computer first\nABORT\n"
+		printf "\n\nERROR: install 7z on you computer first\nABORT\n"
 		exit 8
 else
-		printf "Begining 7z Compression and Encryption for %s...." "$STBKFILE\n"
+		printf "OK - 7z found!\nBegining 7z Compression and Encryption for %s...." "$STBKFILE\n\n"
 fi
-printf "Begining 7z Compression and Encryption for %s...." "$STBKFILE\n"
 # run the password protected and encrypted archive using 7z
 # NB: user will be prompted for a password to use for encryption
 /usr/bin/7z a $STBKFILE . -p -mhe -mx9 -xr\!index-v*
 # check 7z ran ok
 if [ $? -ne 0 ]; then
-    printf "ERROR: 7z Compression failed!\nABORT\n"
+    printf "\n\nERROR: 7z Compression failed!\nABORT\n"
     exit 4
 else
     printf "DONE 7z COMPRESSION !!\n"
@@ -42,7 +44,7 @@ fi
 #
 printf "Attempting to move backup file %s to backup location...\n" "$STBKFILE"
 if [ -f $STBKFILE ] ; then
-	# running on surfmoons computer?
+	# NOT running on coremoon (server) computer?
 	if [ ! "$HOSTNAME" = "coremoons" ] ; then
 		printf "Moving %s to ~/SyncData/Software-Repo/...\n" "$STBKFILE"
 		if [ -f $STBKFILE ] && [ -d $HOME/SyncData/Software-Repo/ ] ; then
