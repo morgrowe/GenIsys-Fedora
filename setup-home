@@ -4,7 +4,7 @@
 #  Fedora Linux on a computer
 #
 # location of configuration and setup files - obtained from Git repo
-GENIFILES='/home/simon/GenIsys-Fedora'
+GENIFILES="$HOME/GenIsys-Fedora"
 #
 #
 #  command line checking: if [ $HOSTNAME == blumoons ] ; then printf "yes\n" ; else printf "no\n" ; fi
@@ -28,7 +28,7 @@ printf "\nLINKING & CREATING DIRECTORIES\n\n"
 #
 # if not on computer 'coremoons' :
 #
-if [ $HOSTNAME != coremoons ] ; then
+if [ $HOSTNAME != coremoons ] && [ $HOSTNAME != "mrowe-pc-fedora" ]; then
     # Check and create if needed the ~/SyncData directories under $HOME - expect for coremoons
     if [ ! -d $HOME/SyncData ] ; then
         printf "Location '$HOME/SyncData' does not exist creating structure\n"
