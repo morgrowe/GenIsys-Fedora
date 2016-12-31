@@ -12,6 +12,7 @@
 ;;    Updated on 11 Sep 2016 - removed marmalade repo (cert error) added follow symlink command
 ;;    Updated on 11 Sep 2016 - added auto install of Emacs packages
 ;;    Updated on 18 Sep 2016 - added auto install of multi-cursor package and key bindings
+;;    Updated on 31 Dec 2016 - added auto install of Rust packages
 ;;
 ;;  NB:  you can reload this file once editied with:
 ;;     M-x load-file RET RET
@@ -101,6 +102,12 @@
 (use-package powershell
   :ensure t)
 ;;
+;; Rust language support
+(use-package rust-mode
+  :ensure t)
+(use-package cargo
+  :ensure t)
+;;
 ;; auto complete and support for c
 (use-package auto-complete
   :ensure t)
@@ -123,9 +130,19 @@
 (use-package flymake-go
   :ensure t)
 ;;
+;;
+(use-package flycheck-rust
+  :ensure t)
+;;
 ;; Mulitple-cursor package: https://github.com/magnars/multiple-cursors.el
 (use-package multiple-cursors
   :ensure t)
+;;
+;; Use company-mode: https://company-mode.github.io/ - used by Rust below
+(use-package company
+  :ensure t)
+;;
+;; END PACKAGE INSTALL
 ;;
 ;; enable abbrev mode and specify the file to keep, and save on exit
 (setq-default abbrev-mode t)
@@ -236,9 +253,27 @@
 (add-hook 'go-mode-hook 'my-go-mode-hook)
 
 ;;
-;; Git support
-;; Add packages to support Git use below:
+;; GIT SUPPORT
+;; Add support setup for packages related to Git below:
 
+;;
+;; RUST LANGUAGE SUPPORT
+;; Add support setup for packages related to Rust below:
+;;
+;; add cargo mode to rust mode
+(add-hook 'rust-mode-hook 'cargo-minor-mode)
+;; run rustfmt on C-c tab
+(add-hook 'rust-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-c <tab>") #'rust-format-buffer)))
+;; add racer - not needs be install at path below (setup-home will do!)	   
+(setq racer-cmd "~/.cargo/bin/racer") ;; Rustup binaries PATH
+(setq racer-rust-src-path "/Users/julien/Code/rust/src") ;; Rust source code PATH
+(add-hook 'rust-mode-hook #'racer-mode)
+(add-hook 'racer-mode-hook #'eldoc-mode)
+(add-hook 'racer-mode-hook #'company-mode)
+;; add fly-check for Rust
+(add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
 
 ;;
 ;; Turn off audio and visual bell as they are annoying...
@@ -264,3 +299,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(put 'narrow-to-region 'disabled nil)

@@ -159,6 +159,15 @@ export PATH
 set -o emacs
 
 #-----------------------------------------------------------------------------
+#    SETUP RUST  to point to our tools path location in: ~/.cargo
+#-----------------------------------------------------------------------------
+# update PATH to include the Rust ~/.cargo tool directory if exists
+if [ -d ~/.cargo/bin ] ; then
+	PATH=~/.cargo/bin:"${PATH}"
+fi
+export PATH
+
+#-----------------------------------------------------------------------------
 #    SETUP GOLANG  to point to our code path location in: ~/SyncData
 #-----------------------------------------------------------------------------
 # Add Go Language $GOPATH to the ~/SyncData/Code-Store/go-code Go code library

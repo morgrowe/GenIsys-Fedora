@@ -423,54 +423,60 @@ else
     echo "        Sublime Text 3 not installed - skipping"
 fi
 
+
+
 ########################################################
-# Add support for UltraEdit editor
+# Add support for Sublime Text editor
 ########################################################
 
-echo "Setup config files for: UltraEdit"
+echo "Setup config files for: Sublime Text 3"
 
-# check that UltraEdit is installed and has been run once by presence of ~/.idm directory
+if [ -x /opt/sublime_text/sublime_text ]  ; then
+    if [ -f ~/GenIsys-Fedora/configs/Desktop-Apps/SublimeText3.desktop ] && \
+        [ ! -f ~/.local/share/applications/SublimeText3.desktop ] ; then
+        cp ~/GenIsys-Fedora/configs/Desktop-Apps/SublimeText3.desktop ~/.local/share/applications/ 
+        echo "      Added 'SublimeText3.desktop' config file for Sublime Text 3"
+    else
+        echo "      '~/.local/share/applications/SublimeText3.desktop'  already exists - skipping"
+    fi
 
-if [  -d ~/.idm ] ; then
-    
-    # check and create spell directory if does not exist
-    if [ ! -d ~/.idm/uex/spell ] ; then
-       mkdir -p ~/.idm/uex/spell
-    fi
-    
-    # '.abbrev_defs' file not used by UltraEdit ?? - left just in case 
-    # if file exists back it up - and create symbolic link instead, otherwise just skip
-    #if [[ -f ~/.idm/uex/spell/.abbrev_defs && ! -L ~/.idm/uex/spell/.abbrev_defs && -f ~/MoonStore/apps/linux/configs/abbrev_defs ]] ; then
-    #    mv ~/.idm/uex/spell/.abbrev_defs ~/.idm/uex/spell/.abbrev_defs-orig-$(date -d "today" +"%Y-%m-%d_%H.%M")
-    #    ln -s ~/MoonStore/apps/linux/configs/abbrev_defs $HOME/.idm/uex/spell/.abbrev_defs
-    #    echo "      Added symbolic link to ~/MoonStore/apps/linux/configs/abbrev_defs for UltraEdit"
-    #else
-    #    echo "      ~/.idm/uex/spell/.abbrev_defs already exists - skipping"
-    #fi
-    
-    # UltraEdit - personal dictionary file (shared with Emacs config also)
-    if [ -f ~/.idm/uex/spell/.aspell.en.pws ] && \
-       [ ! -L ~/.idm/uex/spell/.aspell.en.pws ] && \
-       [ -f $GENIFILES/configs/aspell.en.pws ] ; then
-        mv ~/.idm/uex/spell/.aspell.en.pws ~/.idm/uex/spell/.aspell.en.pws-orig-$(date -d "today" +"%Y-%m-%d_%H.%M")
-        ln -s $GENIFILES/configs/aspell.en.pws ~/.idm/uex/spell/.aspell.en.pws
-        echo "      Added symbolic link to $GENIFILES/configs/aspell.en.pws for UltraEdit"
+    if [ -x /opt/sublime_text/sublime_text ] && \
+       [ ! -L /usr/local/bin/sublime ] ; then
+        sudo ln -s /opt/sublime_text/sublime_text /usr/local/bin/sublime
+        echo "      Added Sublime Text 3 to system PATH location as symbolic link"
     else
-        echo "      ~/.idm/uex/spell/.aspell.en.pws already exists - skipping"
-    fi
-    
-    # UltraEdit - word fixes file (ie wiht fixed to with) and (shared with Emacs config also)
-    if [ -f ~/.idm/uex/spell/.aspell.en.prepl ] && \
-       [ ! -L ~/.idm/uex/spell/.aspell.en.prepl ] && \
-       [ -f $GENIFILES/configs/aspell.en.prepl ] ; then
-        mv ~/.idm/uex/spell/.aspell.en.prepl ~/.idm/uex/spell/.aspell.en.prepl-orig-$(date -d "today" +"%Y-%m-%d_%H.%M")
-        ln -s $GENIFILES/configs/aspell.en.prepl ~/.idm/uex/spell/.aspell.en.prepl
-        echo "      Added symbolic link to $GENIFILES/configs/aspell.en.prepl for UltraEdit"
-    else
-        echo "      ~/.idm/uex/spell/.aspell.en.prepl already exists - skipping"
+        echo "      Sublime Text 3 already in system PATH - skipping"
     fi
 else
-    echo "        UltraEdit not installed - skipping"
+    echo "        Sublime Text 3 not installed - skipping"
+fi
+
+########################################################
+# Add support for Rust development tools
+########################################################
+
+printf "Setup config files for: Rust development\n"
+
+# check that Rust is installed and has been run once by presence of cargo and rustc
+
+if [ -x /usr/bin/rustc ] && [ -x /usr/bin/cargo ]; then
+    # check for rustfmt tool
+    if [ ! -x ~/.cargo/bin/rustfmt ] ; then
+        printf "      Tool 'rustfmt' not found in ~/.cargo/bin...  installing now\n"
+	cargo install rustfmt
+    else
+        echo "        Tool 'rustfmt' already exists - skipping"
+    fi
+    # check for racer tool
+    if [ ! -x ~/.cargo/bin/racer ] ; then
+        printf "      Tool 'racer' not found in ~/.cargo/bin...  installing now\n"
+	cargo install racer
+    else
+        echo "        Tool 'racer' already exists - skipping"
+    fi
+    
+else
+    echo "        Rust devlopment tools not installed - skipping"
 fi
 
 ########################################################
