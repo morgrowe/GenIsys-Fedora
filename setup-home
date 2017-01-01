@@ -648,17 +648,27 @@ if [ -x /usr/bin/vim ]; then
       else
           echo "        lightline support installed for vim already - skipping"
       fi
-      # add vim-go support - require 'Pathogen' package manager
+      # add Rust support - requires 'Pathogen' package manager
       if [ -d ~/.vim/bundle ] && \
-         [ ! -d ~/.vim/bundle/vim-go ] && \
+         [ ! -d ~/.vim/bundle/rust.vim ] && \
          [ -f ~/.vim/autoload/pathogen.vim ] ; then
           cd ~/.vim/bundle
-          git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go
-          vim -u NONE -c "helptags vim-go/doc" -c q
-          echo "        Installed vim-go support"
+          git clone --depth=1 https://github.com/rust-lang/rust.vim.git ~/.vim/bundle/rust.vim
+          echo "        Installed vim rust support"
       else
-          echo "        vim-go support installed for vim already - skipping"
+          echo "        rust support installed for vim already - skipping"
       fi
+      # add vim-go support - require 'Pathogen' package manager
+      #if [ -d ~/.vim/bundle ] && \
+      #   [ ! -d ~/.vim/bundle/vim-go ] && \
+      #   [ -f ~/.vim/autoload/pathogen.vim ] ; then
+      #    cd ~/.vim/bundle
+      #    git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go
+      #    vim -u NONE -c "helptags vim-go/doc" -c q
+      #    echo "        Installed vim-go support"
+      #else
+      #    echo "        vim-go support installed for vim already - skipping"
+      #fi
 else
 	echo "        Vim is not installed - skipping"
 fi	
