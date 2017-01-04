@@ -7,6 +7,7 @@
 # location of configuration and setup files - obtained from Git repo
 GENIFILES=$HOME/GenIsys-Fedora
 #
+#
 printf "\n"
 printf "\n\t\tFedora 25 - package installer\n"
 printf "\n"
